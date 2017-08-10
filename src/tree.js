@@ -1,87 +1,14 @@
-// based on https://bl.ocks.org/d3noob/raw/43a860bc0024792f8803bba8ca0d5ecd/
 
-var treeData =
-{
-	"name": "Animal Classification",
-	"children": [
-
-		// 2-1
-		{
-			"name": "Has Legs",
-			"property": "Has Legs",
-			"operator": "equals",
-			"value": "TRUE",
-
-			"children": [
-
-				// # 3-1
-				{
-					"name": "Has Fur",
-					"property": "Has Fur",
-					"operator": "equals",
-					"value": "TRUE",
-					"children": [
-						{
-							"name": "Might be a DOG",
-							"property": "Might be a DOG",
-							"operator": "equals",
-							"value": "TRUE"
-						}
-					]
-				},
-
-				// 3-2
-				{
-					"name": "Has fur",
-					"property": "Has fur",
-					"operator": "equals",
-					"value": "FALSE",
-					"children": [
-						{
-							"name": "Might be a BIRD",
-							"property": "Might be a BIRD",
-							"operator": "equals",
-							"value": "TRUE"
-						}
-					]
-				}
-			]
-		},
-
-		// 2-2
-		{
-			"name": "No Legs",
-			"property": "Has Legs",
-			"operator": "equals",
-			"value": "FALSE",
-
-			"children": [
-				{
-					"name": "Might be a FISH",
-					"property": "Might be a FISH",
-					"operator": "equals",
-					"value": "TRUE"
-				},
-				{
-					"name": "Might be a SNAKE",
-					"property": "Might be a SNAKE",
-					"operator": "equals",
-					"value": "TRUE"
-				}
-			]
-		}
-	]
-};
 
 var margin = {top: 20, right: 90, bottom: 30, left: 90},
 	width = 1200 - margin.left - margin.right,
 	height = 1000 - margin.top - margin.bottom;
 
-var nodeWidth = 200;
-var nodeHeight = 75;
+var nodeWidth = 280;
+var nodeHeight = 120;
 var nodeMargin = {
-	x: 16,
-	y: 200
+	x: 10,
+	y: 220
 };
 
 var zoom = d3.zoom()
@@ -97,9 +24,7 @@ function zoomFn() {
 		.attr('transform', 'translate(' + d3.event.transform.x + ',' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')');
 }
 
-// append the svg object to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
+// create our SVG and groups (an extra group nesting helps zooming behaviour)
 var svg = d3.select("#tree-panel").append("svg")
 	.attr("width", width + margin.right + margin.left)
 	.attr("height", height + margin.top + margin.bottom)
@@ -172,10 +97,14 @@ function update(source) {
 		})
 		.on('click', click);
 
-	// Add Circle for the nodes
-	nodeEnter.append('circle')
-		.attr('class', 'node')
-		.attr('r', 1e-6)
+	// RECT NODES
+	nodeEnter.append("rect")
+		.attr("width", nodeWidth / 2)
+		.attr("height", nodeHeight / 2)
+		.attr("transform", function (d) {
+			return "translate(" + -(nodeWidth / 4) + "," + -(nodeHeight / 4) + ")";
+		})
+		.attr("stroke", "black")
 		.style("fill", function (d) {
 			return d._children ? "lightsteelblue" : "#fff";
 		});
@@ -183,12 +112,7 @@ function update(source) {
 	// Add labels for the nodes
 	nodeEnter.append('text')
 		.attr("dy", ".35em")
-		.attr("x", function (d) {
-			return d.children || d._children ? -13 : 13;
-		})
-		.attr("text-anchor", function (d) {
-			return d.children || d._children ? "end" : "start";
-		})
+		.attr("text-anchor", "middle")
 		.text(function (d) {
 			return d.data.name;
 		});
@@ -214,7 +138,6 @@ function update(source) {
 
 	// UPDATE
 	var nodeUpdate = nodeEnter.merge(node);
-	//var linkLabelUpdate = labelNodeEnter.merge(node);
 
 	// Transition to the proper position for the node
 	nodeUpdate.transition()
@@ -223,14 +146,15 @@ function update(source) {
 			return "translate(" + d.x + "," + d.y + ")";
 		});
 
+	// RECT
 	// Update the node attributes and style
-	nodeUpdate.select('circle.node')
-		.attr('r', 50)
+	nodeUpdate.select('rect.node')
+		.attr("width", nodeWidth)
+		.attr("height", nodeHeight)
 		.style("fill", function (d) {
 			return d._children ? "lightsteelblue" : "#fff";
 		})
 		.attr('cursor', 'pointer');
-
 
 	// Remove any exiting nodes
 	var nodeExit = node.exit().transition()
@@ -241,8 +165,12 @@ function update(source) {
 		.remove();
 
 	// On exit reduce the node circles size to 0
-	nodeExit.select('circle')
+	nodeExit.select('cicle')
 		.attr('r', 1e-6);
+
+	nodeExit.select('rect')
+		.attr("width", 0)
+		.attr("height", 0);
 
 	// On exit reduce the opacity of text labels
 	nodeExit.select('text')
@@ -256,31 +184,16 @@ function update(source) {
 			return d.id;
 		});
 
-	// Update the link labels...
-	//var label = svg.selectAll('text.link-label')
-	//	.data(links, function (d) {
-	//		return d.id;
-	//	});
-
 	// Enter any new links at the parent's previous position.
 	var linkEnter = link.enter().insert('path', "g")
 		.attr("class", "link")
-		// tag each link with id incase we need it later?
-		//.attr("id", function(d){ return 'link-'+d.id; })
 		.attr('d', function (d) {
 			var o = {x: source.x0, y: source.y0};
 			return diagonal(o, o)
 		});
 
-	//var textEnter = label.enter().append('text')
-	//	.attr("class", "link-label")
-	//	.attr("x", function(d) { return source.x0; })
-     //   .attr("y", function(d) { return source.y0; })
-	//	.text(function(d){ console.log(d); return d.data.operator +" "+ d.data.value; });
-
 	// UPDATE
 	var linkUpdate = linkEnter.merge(link);
-	//var textUpdate = textEnter.merge(label);
 
 	// Transition back to the parent element position
 	linkUpdate.transition()
@@ -288,14 +201,6 @@ function update(source) {
 		.attr('d', function (d) {
 			return diagonal(d, d.parent)
 		});
-
-	//textUpdate.transition()
-	//	.duration(duration)
-	//	.attr("x", function(d) {
-	//		//return d.x;
-	//		return (d.x - source.x0) / 2;
-	//	})
-	//	.attr("y", function(d) { return (d.y - source.y0) / 2; })
 
 	 //Remove any exiting links
 	var linkExit = link.exit().transition()
