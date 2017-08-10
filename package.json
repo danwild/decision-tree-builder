@@ -1,0 +1,27 @@
+{
+  "name": "rule-builder-client",
+  "version": "0.0.1",
+  "description": "Build serialisable flowchart-style decision trees with D3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danwild/rule-builder-client.git"
+  },
+  "keywords": [
+    "d3",
+    "flowchart",
+    "decision-tree"
+  ],
+  "author": "danwild@y7mail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danwild/rule-builder-client/issues"
+  },
+  "homepage": "https://github.com/danwild/rule-builder-client#readme",
+  "dependencies": {
+    "d3": "^4.10.0"
+  }
+}
