@@ -164,10 +164,7 @@ function update(source) {
 		})
 		.remove();
 
-	// On exit reduce the node circles size to 0
-	nodeExit.select('cicle')
-		.attr('r', 1e-6);
-
+	// On exit reduce the node rect size to 0
 	nodeExit.select('rect')
 		.attr("width", 0)
 		.attr("height", 0);
@@ -188,6 +185,8 @@ function update(source) {
 	var linkEnter = link.enter().insert('path', "g")
 		.attr("class", "link")
 		.attr('d', function (d) {
+			// if no previous pos, just use zero
+			if(!source.x0) return  diagonal({x: 0, y: 0}, {x: 0, y: 0});
 			var o = {x: source.x0, y: source.y0};
 			return diagonal(o, o)
 		});
@@ -202,7 +201,7 @@ function update(source) {
 			return diagonal(d, d.parent)
 		});
 
-	 //Remove any exiting links
+	// Remove any exiting links
 	var linkExit = link.exit().transition()
 		.duration(duration)
 		.attr('d', function (d) {
