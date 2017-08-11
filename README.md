@@ -12,13 +12,14 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 * **Result Node:** aka a leaf node, represents the final result when an input is evaluated by the decision tree
 
 ## notes
-* we do not provide any validation of decision tree logic, it's up to you!
+* We do not provide any validation of decision tree conditional logic 
+(it is distinct from the tree data structure... well more accurately the decision logic is simply stored as tree node metadata).
 	* for example; you could make a change to a parent node which renders its children completely redundant, 
-	and it will still be valid.  
+	and it will still be valid (children won't be pruned, do it yourself man).  
 
 ## todo
-* start drafting API..
-	* Interaction flow, somewhere to start:
+* Start drafting API for interaction..
+	* Somewhere to start:
 	    * User click node to add/edit
 	        * selectNode()
             * if children returns data for that node..
