@@ -34,7 +34,10 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 ## shout outs
 * [Mike Bostock](https://d3js.org/)
 * [https://bl.ocks.org/d3noob](https://bl.ocks.org/d3noob)
-	    	  	   
+		       	  	   
+## license
+The MIT License (MIT)	
+	          	  	   
 [npm-image]: https://badge.fury.io/js/decision-tree-builder.svg
 [npm-url]: https://www.npmjs.com/package/decision-tree-builder
 [npm-downloads-image]: https://img.shields.io/npm/dt/decision-tree-builder.svg	   
