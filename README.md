@@ -11,7 +11,6 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 * **Result Node:** aka a leaf node, represents the final result when an input is evaluated by the decision tree
 
 ## todo
-* expand all nodes on init
 * refactor into js module
 * gulpify
 * start drafting API..
