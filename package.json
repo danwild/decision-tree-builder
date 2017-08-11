@@ -1,7 +1,7 @@
 {
-	"name": "rule-builder-client",
+	"name": "decision-tree-builder",
 	"version": "0.0.1",
-	"description": "Build serialisable flowchart-style decision trees with D3",
+	"description": "A tool to build data classification rules using visual flowchart-style decision tree",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

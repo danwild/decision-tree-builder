@@ -1,4 +1,4 @@
-# decision-tree-builder
+# decision-tree-builder [![NPM version][npm-image]][npm-url] [![NPM Downloads][npm-downloads-image]][npm-url]
 
 A tool to build data classification rules using visual flowchart-style decision tree.
 Uses [d3.js v4](https://d3js.org/) for SVG drawing.
@@ -18,3 +18,12 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 	    * Select an operator
 	    * Select a value
 	    * Cancel / Add / Update
+	    
+	    
+	    
+	    
+	   
+	   
+[npm-image]: https://badge.fury.io/js/decision-tree-builder.svg
+[npm-url]: https://www.npmjs.com/package/decision-tree-builder
+[npm-downloads-image]: https://img.shields.io/npm/dt/decision-tree-builder.svg	   
