@@ -39,7 +39,8 @@
 		
 		// create our SVG and groups (an extra group nesting helps zooming behaviour)
 		let svg = d3.select(divId).append("svg")
-			.attr("width", width + margin.right + margin.left)
+			//.attr("width", width + margin.right + margin.left)
+			.attr("width", "100%")
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")
 			.append("g")
@@ -49,6 +50,10 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
+		this.updateNode = function(d, data){
+
+		};
+
 		this.resetZoom = function(){
 			svg.transition().call(zoom.transform, d3.zoomIdentity);
 		};
@@ -57,7 +62,7 @@
 		this.collapse = function(d) {
 			if (d.children) {
 				d._children = d.children;
-				d._children.forEach(collapse);
+				d._children.forEach(self.collapse);
 				d.children = null
 			}
 		};
@@ -65,19 +70,19 @@
 		this.expand = function(d) {
 			if (d._children) {
 				d.children = d._children;
-				d.children.forEach(expand);
+				d.children.forEach(self.expand);
 				d._children = null
 			}
 		};
 
 		this.colapseAll = function(){
-			root.children.forEach(collapse);
-			update(root);
+			this.root.children.forEach(self.collapse);
+			this.update(root);
 		};
 
 		this.expandAll = function(){
-			root.children.forEach(expand);
-			update(root);
+			this.root.children.forEach(self.expand);
+			this.update(root);
 		};
 
 		this.update = function(source) {
@@ -105,6 +110,7 @@
 			// Enter any new modes at the parent's previous position.
 			let nodeEnter = node.enter().append('g')
 				.attr('class', 'node')
+				.attr("id", function(d){ return "node-"+d.id; })
 				.attr("transform", function (d) {
 					if(source.x0) return "translate(" + source.x0 + "," + source.y0 + ")";
 				})
@@ -238,22 +244,44 @@
 				return path
 			}
 
-			// Toggle children on click.
 			function _click(d) {
-				console.log(d);
-				if (d.children) {
-					d._children = d.children;
-					d.children = null;
-				} else {
-					d.children = d._children;
-					d._children = null;
-				}
-				self.update(d);
+
+				_setHighlighted(d);
+
+				var evt = new CustomEvent('nodeClick', { detail: d });
+				window.dispatchEvent(evt);
+
+				// Toggle children on click.
+				//if (d.children) {
+				//	d._children = d.children;
+				//	d.children = null;
+				//} else {
+				//	d.children = d._children;
+				//	d._children = null;
+				//}
+				//self.update(d);
 			}
 		};
 
 
 		/* -------------------------- Private methods --------------------------------*/
+
+		function _setHighlighted(node){
+
+			console.log(node);
+
+			// clear highlighting
+			d3.selectAll(".node").select('rect')
+				.style("fill", function(d){
+					return (!d._children && !d.children) ? "#CCC" : "#FFF";
+				});
+
+			// highlight target node
+			if(node){
+				d3.select("#node-"+node.id).select('rect')
+					.style("fill", "#10B0F0");
+			}
+		}
 
 		function _zoomFn() {
 			d3.select(divId).select('svg').select('g')

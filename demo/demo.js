@@ -26,4 +26,7 @@ var myBuilder = new DecisionTreeBuilder(treeData, options);
 console.log('myBuilder');
 console.log(myBuilder);
 
-//alert(RuleBuilder.foo());
+window.addEventListener('nodeClick', function (e) {
+	console.log('nodeClick');
+	console.log(e.detail);
+});
