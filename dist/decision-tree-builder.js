@@ -6,7 +6,7 @@
 
 	// constructor
 
-	var RuleBuilder = function RuleBuilder(data, options) {
+	var DecisionTreeBuilder = function DecisionTreeBuilder(data, options) {
 
 		// init layout from options
 		var margin = options.layout.svgMargin;
@@ -225,7 +225,7 @@
 	// AMD support
 	if (typeof define === 'function' && define.amd) {
 		define(function () {
-			return RuleBuilder;
+			return DecisionTreeBuilder;
 		});
 	}
 
@@ -234,14 +234,14 @@
 
 			// Support Node.js specific `module.exports` (which can be a function)
 			if (typeof module !== 'undefined' && module.exports) {
-				exports = module.exports = RuleBuilder;
+				exports = module.exports = DecisionTreeBuilder;
 			}
 			// But always support CommonJS module 1.1.1 spec (`exports` cannot be a function)
-			exports.RuleBuilder = RuleBuilder;
+			exports.RuleBuilder = DecisionTreeBuilder;
 		}
 
 		// stick it in the window
 		else {
-				window.RuleBuilder = RuleBuilder;
+				window.RuleBuilder = DecisionTreeBuilder;
 			}
 })(undefined);

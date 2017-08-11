@@ -1,4 +1,4 @@
-# rule-builder-client
+# decision-tree-builder
 
 A tool to build data classification rules using visual flowchart-style decision tree.
 Uses [d3.js v4](https://d3js.org/) for SVG drawing.
@@ -11,8 +11,6 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 * **Result Node:** aka a leaf node, represents the final result when an input is evaluated by the decision tree
 
 ## todo
-* refactor into js module
-* gulpify
 * start drafting API..
 	* Interaction flow, somewhere to start:
 	    * User click node to add/edit

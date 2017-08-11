@@ -11,24 +11,24 @@ gulp.task('scripts', function() {
 	return gulp.src([
 			'src/js/**.js'
 		])
-		.pipe(concat('rule-builder.js'))
+		.pipe(concat('decision-tree-builder.js'))
 		.pipe(babel({
 			presets: ['es2015']
 		}))
 		.pipe(gulp.dest('dist'))
-		.pipe(rename('rule-builder.min.js'))
+		.pipe(rename('decision-tree-builder.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest('dist'));
 });
 
 gulp.task('concatCss', function () {
 	return gulp.src('./src/css/*.css')
-		.pipe(concatCss('rule-builder.css'))
+		.pipe(concatCss('decision-tree-builder.css'))
 		.pipe(gulp.dest('./dist'));
 });
 
 gulp.task('cssNano', ['concatCss'], function() {
-	gulp.src('./dist/rule-builder.css')
+	gulp.src('./dist/decision-tree-builder.css')
 		.pipe(cssNano())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest('./dist'));
