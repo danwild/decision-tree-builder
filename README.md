@@ -15,7 +15,7 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 * We do not provide any validation of decision tree conditional logic 
 (it is distinct from the tree data structure... well more accurately the decision logic is simply stored as tree node metadata).
 	* for example; you could make a change to a parent node which renders its children completely redundant, 
-	and it will still be valid (children won't be pruned, do it yourself man).  
+	and it will still be valid (children won't be auto pruned, do it yourself man).  
 
 ## todo
 * Start drafting API for interaction..
@@ -30,7 +30,10 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 	    * Select a value
 	    * Cancel / Add / Update
 	    	   
-	  
+	
+## shout outs
+* [Mike Bostock](https://d3js.org/)
+* [https://bl.ocks.org/d3noob](https://bl.ocks.org/d3noob)
 	    	  	   
 [npm-image]: https://badge.fury.io/js/decision-tree-builder.svg
 [npm-url]: https://www.npmjs.com/package/decision-tree-builder

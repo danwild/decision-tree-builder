@@ -119,9 +119,16 @@
 			// RECT NODES
 			nodeEnter.append("rect")
 				.attr("width", nodeWidth / 2)
-				.attr("height", nodeHeight / 2)
+				.attr("height", function(d){
+					return (!d._children && !d.children) ? nodeHeight / 3 : nodeHeight / 2;
+				})
 				.attr("transform", function (d) {
-					return "translate(" + -(nodeWidth / 4) + "," + -(nodeHeight / 4) + ")";
+					return (!d._children && !d.children) ? "" : "rotate(45)";
+				})
+				.attr("x", -(nodeWidth / 4))
+				//.attr("y", -(nodeWidth / 4))
+				.attr("y", function(d){
+					return (!d._children && !d.children) ? -(nodeHeight / 5.5) : -(nodeHeight / 4);
 				})
 				.attr("stroke", "black")
 				.style("fill", function (d) {

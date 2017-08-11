@@ -11,11 +11,11 @@ var options = {
 			bottom: 30,
 			left: 90
 		},
-		nodeWidth: 280,
-		nodeHeight: 120,
+		nodeWidth: 250,
+		nodeHeight: 250,
 		nodeMargin: {
-			x: 10,
-			y: 200
+			x: 100,
+			y: 250
 		},
 		zoomScale: [-1, 100],
 		transitionDuration: 750
