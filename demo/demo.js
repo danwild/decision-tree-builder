@@ -22,7 +22,7 @@ var options = {
 	}
 };
 
-var myBuilder = new RuleBuilder(treeData, options);
+var myBuilder = new DecisionTreeBuilder(treeData, options);
 console.log('myBuilder');
 console.log(myBuilder);
 

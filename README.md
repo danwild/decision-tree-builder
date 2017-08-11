@@ -14,6 +14,10 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 * start drafting API..
 	* Interaction flow, somewhere to start:
 	    * User click node to add/edit
+	        * selectNode()
+            * if children returns data for that node..
+            * else object scaffold with empty values..?
+	    * We need to define a schema for defining properties, operators, and values. Then: 
 	    * Select a property
 	    * Select an operator
 	    * Select a value
@@ -21,9 +25,7 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 	    
 	    
 	    
-	    
-	   
-	   
+	   	   
 [npm-image]: https://badge.fury.io/js/decision-tree-builder.svg
 [npm-url]: https://www.npmjs.com/package/decision-tree-builder
 [npm-downloads-image]: https://img.shields.io/npm/dt/decision-tree-builder.svg	   

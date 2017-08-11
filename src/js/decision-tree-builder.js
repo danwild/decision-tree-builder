@@ -2,7 +2,6 @@
 
 	'use strict';
 
-	// constructor
 	let DecisionTreeBuilder = function(data, options){
 
 		// init layout from options
@@ -120,7 +119,7 @@
 				})
 				.attr("stroke", "black")
 				.style("fill", function (d) {
-					return d._children ? "lightsteelblue" : "#fff";
+					return (!d._children && !d.children) ? "#CCC" : "#FFF";
 				});
 
 			// Add labels for the nodes
@@ -241,6 +240,7 @@
 
 			// Toggle children on click.
 			function _click(d) {
+				console.log(d);
 				if (d.children) {
 					d._children = d.children;
 					d.children = null;
@@ -286,12 +286,12 @@
 			exports = module.exports = DecisionTreeBuilder;
 		}
 		// But always support CommonJS module 1.1.1 spec (`exports` cannot be a function)
-		exports.RuleBuilder = DecisionTreeBuilder;
+		exports.DecisionTreeBuilder = DecisionTreeBuilder;
 	}
 
 	// stick it in the window
 	else {
-		window.RuleBuilder = DecisionTreeBuilder;
+		window.DecisionTreeBuilder = DecisionTreeBuilder;
 	}
 
 })(this);
