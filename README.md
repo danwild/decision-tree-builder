@@ -20,6 +20,43 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 	* for example; you could make a change to a parent node which renders its children completely redundant, 
 	and it will still be valid (children won't be auto pruned, do it yourself man).
 
+## example use
+Initialise with data and options:
+```javascript
+let options = {
+	layout: {
+		divId: "tree-panel",
+		svgWidth: 1200,
+		svgHeight: 1000,
+		svgMargin: {
+			top: 20,
+			right: 90,
+			bottom: 30,
+			left: 90
+		},
+		nodeWidth: 250,
+		nodeHeight: 250,
+		nodeMargin: {
+			x: 100,
+			y: 250
+		},
+		zoomScale: [-1, 100],
+		transitionDuration: 750
+	}
+};
+let myBuilder = new DecisionTreeBuilder(treeData, options);
+```
+
+Then listen for nodeClick events, you will be passed the target node in the event detail:
+```javascript
+window.addEventListener('nodeClick', function (e) {
+
+	var node = e.detail;
+	// perform action with the node..
+
+});
+```
+
 ## core methods
 We basically have CRUD:
 * `addChildNodes(node, newNodesData)`
