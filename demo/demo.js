@@ -23,18 +23,18 @@ var options = {
 
 var myBuilder = new DecisionTreeBuilder(treeData, options);
 
-function addNodes(node){
+function addNodes(node, index){
 
 	let newNodesData = [
 		{
-			"label": "Dynamic #1",
-			"property": "Dynamic #1",
+			"label": "Dynamic #"+index,
+			"property": "Dynamic #"+index,
 			"operator": "operator",
 			"value": "value"
 		},
 		{
-			"label": "Dynamic #2",
-			"property": "Dynamic #2",
+			"label": "Dynamic #other"+index,
+			"property": "Dynamic #other"+index,
 			"operator": "operator",
 			"value": "value"
 		}
@@ -59,15 +59,28 @@ function editNode(node){
 	myBuilder.updateNodeData(node, newData);
 }
 
+let added = 0;
+
 window.addEventListener('nodeClick', function (e) {
 
-	console.log('nodeClick');
-	console.log(e.detail);
+	//console.log('nodeClick');
+	//console.log(e.detail);
 
 	var node = e.detail;
+
+	if(added < 2){
+		addNodes(node, added);
+		added++;
+	}
+	else {
+		let serialTree = myBuilder.getSerialisedTree();
+		console.log(serialTree);
+	}
 
 	// method examples
 	//addNodes(node);
 	//editNode(node);
 	//pruneNode(node);
+
+
 });

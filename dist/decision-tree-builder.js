@@ -46,6 +46,56 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
+		this.getSerialisedTree = function () {
+
+			this.treeData = this.treemap(this.root);
+			this.nodes = this.treeData.descendants();
+
+			// the root node has everything we need, we just have to clean it
+			var root = this.nodes[0];
+			console.log('root node');
+			console.log(root);
+
+			stripNode(root);
+
+			/**
+    * A recursive function to crawl all nodes and children to
+    * strip the d3 data properties we don't want to serialise
+    * @param node
+    */
+			function stripNode(node) {
+
+				// strip this node
+				delete node.height;
+				delete node.depth;
+				delete node.id;
+				delete node.parent;
+				delete node.x;
+				delete node.x0;
+				delete node.y;
+				delete node.y0;
+
+				// move data properties into object root
+				node['label'] = node.data.label;
+				node['property'] = node.data.property;
+				if (node.data.operator) node['operator'] = node.data.operator;
+				if (node.data.value) node['value'] = node.data.value;
+				delete node.data;
+
+				// strip its children
+				if (node.children) {
+					node.children.forEach(function (child) {
+						stripNode(child);
+					});
+				}
+			}
+
+			console.log('stripped');
+			console.log(root);
+
+			return JSON.stringify(root);
+		};
+
 		/**
    * @summary Prunes the target decision node and all of its children.
    * If target node is not a decision node, no action taken.
@@ -125,6 +175,8 @@
 			// you can only add child nodes to a leaf
 			if (originalNode.children && originalNode.children.length == 2) return;
 
+			console.log('adding newChildren');
+
 			newChildren.forEach(function (d) {
 
 				// Creates a Node from newNode object, see https://github.com/d3/d3-hierarchy
@@ -139,7 +191,7 @@
 				//the parent node, or null for the root node.
 				newNode.parent = originalNode;
 				// uid
-				newNode.id = new Date() + parseInt(Math.random() * 10000);
+				newNode.id = +new Date() + parseInt(Math.random() * 10000);
 
 				// If no child array, create an empty array
 				if (!originalNode.children) {
@@ -150,6 +202,9 @@
 				// Push it to parent.children array
 				originalNode.children.push(newNode);
 				originalNode.data.children.push(newNode.data);
+
+				console.log('newNode');
+				console.log(newNode);
 			});
 
 			this.update(originalNode);
@@ -227,29 +282,31 @@
 				return !d._children && !d.children ? "#CCC" : "#FFF";
 			});
 
-			// edit node labels if exist
+			// edit node labels if exist and no new nodes
 			var rectLabel = node.selectAll("text.node-label");
-			if (!rectLabel.empty()) {
+			if (!rectLabel.empty() && rectLabel.size() == this.nodes.length) {
+				console.log('update existing labels');
 				rectLabel.text(function (d) {
+					console.log(d.data.label);
 					return d.data.label;
 				});
 			} else {
-				// init node labels
+				// add new node labels
 				console.log('Add labels for the nodes');
 				nodeEnter.append('text').attr("dy", ".35em").attr("class", "node-label").attr("text-anchor", "middle").text(function (d) {
 					return d.data.label;
 				});
 			}
 
-			// update link label if exists
+			// update link label if exists and no new nodes
 			var linkLabel = node.selectAll("text.link-label");
-			if (!linkLabel.empty()) {
+			if (!linkLabel.empty() && linkLabel.size() == this.nodes.length) {
 				linkLabel.text(function (d) {
 					if (d.parent) return d.data.operator + " " + d.data.value;
 				});
 			}
 
-			// init link labels
+			// add new link labels
 			else {
 					nodeEnter.append('text').attr("dy", ".65em").attr("class", "link-label").attr("x", function (d) {
 						if (d.parent) {
