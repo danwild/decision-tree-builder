@@ -55,20 +55,33 @@
 		 https://stackoverflow.com/questions/43140325/add-node-to-d3-tree-v4
 		    https://github.com/fhightower/d3-dynamic-tree/blob/master/js/dynamicTree.js
 		 */
-		this.updateNode = function(originalNode, data){
+		this.addChildNodes = function(originalNode, newChildren){
 
-			data.forEach(function(d){
+			//return;
+
+			console.log('unmodified originalNode');
+			console.log(originalNode.toString());
+
+			newChildren.forEach(function(d){
 
 				// Creates a Node from newNode object using d3.hierarchy(.)
+				// https://github.com/d3/d3-hierarchy
 				var newNode = d3.hierarchy(d);
 
-				// later added some properties to Node like child,parent,depth
-				newNode.depth = originalNode.depth + 1;
-				newNode.height = originalNode.height + 1;
-				newNode.parent = originalNode;
-				newNode.id = Date.now();
+				// add some properties to Node like child,parent,depth
 
-				// adding the new node as a child of targetNode
+				// zero for the root node, and increasing by one for each descendant generation.
+				newNode.depth = originalNode.depth + 1;
+
+				// zero for leaf nodes
+				newNode.height = 0;
+
+				//the parent node, or null for the root node.
+				newNode.parent = originalNode;
+
+				// uid
+				newNode.id = parseInt(Math.random() * 1000000000);
+
 				// If no child array, create an empty array
 				if(!originalNode.children){
 					originalNode.children = [];
@@ -81,7 +94,10 @@
 
 			});
 
+			console.log('originalNode');
+			console.log(originalNode);
 
+			this.update(originalNode);
 
 
 			// ADDING invisible nodes to invisible nodes..!?
@@ -107,7 +123,7 @@
 			//	node._children = null;
 			//}
 
-			this.update(originalNode);
+
 		};
 
 		this.resetZoom = function(){
@@ -163,7 +179,7 @@
 					return d.id || (d.id = ++nodeIndex);
 				});
 
-			// Enter any new modes at the parent's previous position.
+			// Enter any new nodes at the parent's previous position.
 			let nodeEnter = node.enter().append('g')
 				.attr('class', 'node')
 				.attr("id", function(d){ return "node-"+d.id; })
@@ -331,7 +347,7 @@
 
 		function _setHighlighted(node){
 
-			console.log(node);
+			//console.log(node);
 
 			// clear highlighting
 			d3.selectAll(".node").select('rect')

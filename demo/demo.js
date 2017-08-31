@@ -23,35 +23,40 @@ var options = {
 };
 
 var myBuilder = new DecisionTreeBuilder(treeData, options);
-console.log('myBuilder');
-console.log(myBuilder);
 
-var dynamicNodes = [
-	{
-		//data: {
+function addNodes(node){
+
+	let newNodes = [
+		{
 			"name": "Dynamic #1",
 			"property": "Dynamic #1",
 			"operator": "operator",
 			"value": "value"
-		//}
-	},
-	{
-		//data: {
+		},
+		{
 			"name": "Dynamic #2",
 			"property": "Dynamic #2",
 			"operator": "operator",
 			"value": "value"
-		//}
-	}
-];
+		}
+	];
+
+	myBuilder.addChildNodes(node, newNodes);
+}
+
+function editNode(node){
+	//myBuilder.updateNode(node, newNodes);
+}
+
+var added = 0;
 
 window.addEventListener('nodeClick', function (e) {
+
 	console.log('nodeClick');
-	//console.log(e.detail);
+	console.log(e.detail);
 
-	var node = e.detail;
-	//node.children = dynamicNodes;
+	var targetNode = e.detail;
 
-	myBuilder.updateNode(node, dynamicNodes);
+	addNodes(targetNode);
 
 });
