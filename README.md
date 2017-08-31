@@ -46,7 +46,8 @@ let options = {
 		transitionDuration: 750
 	}
 };
-let myBuilder = new DecisionTreeBuilder(treeData, options);
+
+let myBuilder = new DecisionTreeBuilder(treeData, options); // see demo for expected data format
 ```
 
 Then listen for `nodeClick` events, you will be passed the target node in the event detail:

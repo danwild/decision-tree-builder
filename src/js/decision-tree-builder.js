@@ -50,45 +50,17 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
-
 		/**
-		 * @summary A recursive helper function for performing some setup by walking through all nodes
-		 * @param parent
-		 * @param visitFn
-		 * @param childrenFn
+		 * @summary Prunes the target decision node and all of its children.
+		 * If target node is not a decision node, no action taken.
+		 * @param node
 		 */
-		function visit(parent, visitFn, childrenFn) {
-			if (!parent) return;
-
-			visitFn(parent);
-
-			var children = childrenFn(parent);
-			if (children) {
-				var count = children.length;
-				for (var i = 0; i < count; i++) {
-					visit(children[i], visitFn, childrenFn);
-				}
-			}
-		}
-
-		function filterChildren(children, toRemove){
-
-			for(var i = children.length - 1; i >= 0; i--){
-				for(var j = 0; j < toRemove.length; j++){
-					if(children[i] && ( children[i].id === toRemove[j].id )){
-						children.splice(i, 1);
-					}
-				}
-			}
-
-			return children;
-
-		}
-
 		this.pruneNode = function(node){
-			delete node.children;
-			delete node.data.children;
-			this.update(node);
+			if(node.children && node.children.length > 0){
+				delete node.children;
+				delete node.data.children;
+				this.update(node);
+			}
 		};
 
 		/**
@@ -100,12 +72,12 @@
 
 			var self = this;
 
-			visit(this.treeData, function(d) {
+			_visit(this.treeData, function(d) {
 				if(d.children) {
 					for (var child of d.children) {
 						if (child == node) {
 							//d.children = _.without(d.children, child);
-							d.children = filterChildren(d.children, [child]);
+							d.children = _filterChildren(d.children, [child]);
 							self.update(self.root);
 							break;
 						}
@@ -118,12 +90,25 @@
 			});
 		};
 
+		/**
+		 * @summary Update an existing nodes data
+		 * @param node
+		 * @param newData
+		 */
 		this.updateNodeData = function(node, newData){
 			node.data = newData;
 			this.update(node);
 		};
 
+		/**
+		 * Add newChildren to the original leaf node, which becomes a decision node.
+		 * @param originalNode
+		 * @param newChildren
+		 */
 		this.addChildNodes = function(originalNode, newChildren){
+
+			// you can only add child nodes to a leaf
+			if(originalNode.children && originalNode.children.length == 2) return;
 
 			newChildren.forEach(function(d){
 
@@ -230,11 +215,11 @@
 					return (!d._children && !d.children) ? "" : "rotate(45)";
 				})
 				.attr("x", -(nodeWidth / 4))
-				//.attr("y", -(nodeWidth / 4))
 				.attr("y", function(d){
 					return (!d._children && !d.children) ? -(nodeHeight / 5.5) : -(nodeHeight / 4);
 				})
 				.attr("stroke", "black")
+				.attr("stroke-width", 2)
 				.style("fill", function (d) {
 					return (!d._children && !d.children) ? "#CCC" : "#FFF";
 				});
@@ -388,8 +373,8 @@
 
 
 		/* -------------------------- Private methods --------------------------------*/
-		let _previousNode;
 
+		let _previousNode;
 		function _setHighlighted(node){
 
 			// clear highlighting
@@ -407,6 +392,47 @@
 			}
 
 			_previousNode = null;
+		}
+
+		/**
+		 * @summary A recursive helper function for performing some setup by walking through all nodes
+		 * @param parent
+		 * @param visitFn
+		 * @param childrenFn
+		 */
+		function _visit(parent, visitFn, childrenFn) {
+			if (!parent) return;
+
+			visitFn(parent);
+
+			var children = childrenFn(parent);
+			if (children) {
+				var count = children.length;
+				for (var i = 0; i < count; i++) {
+					_visit(children[i], visitFn, childrenFn);
+				}
+			}
+		}
+
+		/**
+		 * Return an array of children, without those to toRemove (similar to underscores _.without)
+		 * @param children
+		 * @param toRemove
+		 * @returns {*}
+		 * @private
+		 */
+		function _filterChildren(children, toRemove){
+
+			for(var i = children.length - 1; i >= 0; i--){
+				for(var j = 0; j < toRemove.length; j++){
+					if(children[i] && ( children[i].id === toRemove[j].id )){
+						children.splice(i, 1);
+					}
+				}
+			}
+
+			return children;
+
 		}
 
 		function _zoomFn() {

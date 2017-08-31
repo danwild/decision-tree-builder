@@ -1,7 +1,7 @@
 var treeData =
 {
 	"label": "Public label",
-	"property": "Public",
+	"property": "Puuublic",
 	
 	"children": [
 
