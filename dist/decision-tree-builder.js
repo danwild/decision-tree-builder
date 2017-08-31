@@ -369,7 +369,10 @@
 			if (node && node.id != _previousNode) {
 				d3.select("#node-" + node.id).select('rect').style("fill", "#10B0F0");
 				_previousNode = node.id;
+				return;
 			}
+
+			_previousNode = null;
 		}
 
 		function _zoomFn() {

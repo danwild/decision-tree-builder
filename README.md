@@ -47,7 +47,7 @@ let options = {
 let myBuilder = new DecisionTreeBuilder(treeData, options);
 ```
 
-Then listen for nodeClick events, you will be passed the target node in the event detail:
+Then listen for `nodeClick` events, you will be passed the target node in the event detail:
 ```javascript
 window.addEventListener('nodeClick', function (e) {
 
