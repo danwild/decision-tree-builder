@@ -383,25 +383,14 @@
 
 				var evt = new CustomEvent('nodeClick', { detail: d });
 				window.dispatchEvent(evt);
-
-				// Toggle children on click.
-				//if (d.children) {
-				//	d._children = d.children;
-				//	d.children = null;
-				//} else {
-				//	d.children = d._children;
-				//	d._children = null;
-				//}
-				//self.update(d);
 			}
 		};
 
 
 		/* -------------------------- Private methods --------------------------------*/
+		let _previousNode;
 
 		function _setHighlighted(node){
-
-			//console.log(node);
 
 			// clear highlighting
 			d3.selectAll(".node").select('rect')
@@ -410,9 +399,10 @@
 				});
 
 			// highlight target node
-			if(node){
+			if(node && node.id != _previousNode){
 				d3.select("#node-"+node.id).select('rect')
 					.style("fill", "#10B0F0");
+				_previousNode = node.id;
 			}
 		}
 

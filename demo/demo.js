@@ -73,5 +73,5 @@ window.addEventListener('nodeClick', function (e) {
 
 	//editNode(node);
 
-	pruneNode(node);
+	//pruneNode(node);
 });

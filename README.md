@@ -63,6 +63,8 @@ We basically have CRUD:
 * `updateNodeData(node, newData)`
 * `pruneNode(node)`
 
+## todo
+* serialise tree to JSON
 
 ## shout outs
 * [Mike Bostock](https://d3js.org/)
