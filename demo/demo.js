@@ -1,4 +1,3 @@
-//import rBuilder from 'rule-builder';
 
 var options = {
 	layout: {
@@ -60,8 +59,6 @@ function editNode(node){
 	myBuilder.updateNodeData(node, newData);
 }
 
-var added = 0;
-
 window.addEventListener('nodeClick', function (e) {
 
 	console.log('nodeClick');
@@ -69,9 +66,8 @@ window.addEventListener('nodeClick', function (e) {
 
 	var node = e.detail;
 
+	// method examples
 	//addNodes(node);
-
 	//editNode(node);
-
 	//pruneNode(node);
 });
