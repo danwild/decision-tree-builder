@@ -50,8 +50,64 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
-		this.updateNode = function(d, data){
+		/*
+			Example of adding nodes dynamically:
+		 https://stackoverflow.com/questions/43140325/add-node-to-d3-tree-v4
+		    https://github.com/fhightower/d3-dynamic-tree/blob/master/js/dynamicTree.js
+		 */
+		this.updateNode = function(originalNode, data){
 
+			data.forEach(function(d){
+
+				// Creates a Node from newNode object using d3.hierarchy(.)
+				var newNode = d3.hierarchy(d);
+
+				// later added some properties to Node like child,parent,depth
+				newNode.depth = originalNode.depth + 1;
+				newNode.height = originalNode.height + 1;
+				newNode.parent = originalNode;
+				newNode.id = Date.now();
+
+				// adding the new node as a child of targetNode
+				// If no child array, create an empty array
+				if(!originalNode.children){
+					originalNode.children = [];
+					originalNode.data.children = [];
+				}
+
+				// Push it to parent.children array
+				originalNode.children.push(newNode);
+				originalNode.data.children.push(newNode.data);
+
+			});
+
+
+
+
+			// ADDING invisible nodes to invisible nodes..!?
+			// if the child has children that are not currently visible, add children to each of the currently invisible nodes
+			//if(node._children) {
+			//	console.log('1');
+			//	node._children.forEach(function(childNode) {
+			//		let associatedItems = data;
+			//		childNode._children = associatedItems;
+			//	});
+			//}
+			//
+			//// if the node has visible children, make them invisible
+			//if (node.children) {
+			//	console.log('2');
+			//	node._children = node.children;
+			//	node.children = null;
+			//}
+			//// if the node has invisible children, make them visible
+			//else {
+			//	console.log('3');
+			//	node.children = node._children;
+			//	node._children = null;
+			//}
+
+			this.update(originalNode);
 		};
 
 		this.resetZoom = function(){

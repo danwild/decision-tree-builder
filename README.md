@@ -21,9 +21,9 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 * Start drafting API for interaction..
 	* Somewhere to start:
 	    * User click node to add/edit
-	        * selectNode()
-            * if children returns data for that node..
-            * else object scaffold with empty values..?
+	        * event received with node data
+            * edit data
+            * call updateNode() with updated node, or null to delete the node (and children).
 	    * We need to define a schema for defining properties, operators, and values. Then: 
 	    * Select a property
 	    * Select an operator
@@ -33,7 +33,7 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 	
 ## shout outs
 * [Mike Bostock](https://d3js.org/)
-* [https://bl.ocks.org/d3noob](https://bl.ocks.org/d3noob)
+* [d3noob](https://bl.ocks.org/d3noob)
 		       	  	   
 ## license
 The MIT License (MIT)	
