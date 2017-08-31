@@ -1,6 +1,6 @@
 {
 	"name": "decision-tree-builder",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "A tool to build data classification rules using visual flowchart-style decision tree",
 	"main": "index.js",
 	"scripts": {
@@ -8,7 +8,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/danwild/rule-builder-client.git"
+		"url": "git+https://github.com/danwild/decision-tree-builder.git"
 	},
 	"keywords": [
 		"d3",
@@ -18,9 +18,9 @@
 	"author": "danwild@y7mail.com",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/danwild/rule-builder-client/issues"
+		"url": "https://github.com/danwild/decision-tree-builder/issues"
 	},
-	"homepage": "https://github.com/danwild/rule-builder-client#readme",
+	"homepage": "https://github.com/danwild/decision-tree-builder#readme",
 	"dependencies": {
 		"d3": "^4.10.0"
 	},

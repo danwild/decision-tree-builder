@@ -3,6 +3,8 @@
 A tool to build data classification rules using visual flowchart-style decision tree.
 Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 
+![Screenshot](/screenshots/decision-tree-builder.png?raw=true)
+
 ## terminology
 * **Property:** a (data) attribute being evaluated as part a decision (e.g. Property: "animal")
 * **Value:** a value being used in a conditional statement to evaluate a property 
