@@ -50,37 +50,96 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
-		/*
-			Example of adding nodes dynamically:
-		 https://stackoverflow.com/questions/43140325/add-node-to-d3-tree-v4
-		    https://github.com/fhightower/d3-dynamic-tree/blob/master/js/dynamicTree.js
+
+		/**
+		 * @summary A recursive helper function for performing some setup by walking through all nodes
+		 * @param parent
+		 * @param visitFn
+		 * @param childrenFn
 		 */
+		function visit(parent, visitFn, childrenFn) {
+			if (!parent) return;
+
+			visitFn(parent);
+
+			var children = childrenFn(parent);
+			if (children) {
+				var count = children.length;
+				for (var i = 0; i < count; i++) {
+					visit(children[i], visitFn, childrenFn);
+				}
+			}
+		}
+
+		function filterChildren(children, toRemove){
+
+			for(var i = children.length - 1; i >= 0; i--){
+				for(var j = 0; j < toRemove.length; j++){
+					if(children[i] && ( children[i].id === toRemove[j].id )){
+						children.splice(i, 1);
+					}
+				}
+			}
+
+			return children;
+
+		}
+
+		this.pruneNode = function(node){
+			delete node.children;
+			delete node.data.children;
+			this.update(node);
+		};
+
+		/**
+		 * @summary Experimental (use `pruneNode` instead). The tree should only be *pruned* at
+		 * decision nodes to remain valid (so we don’t end up with single children).
+		 * @param node
+		 */
+		this.deleteNode = function(node){
+
+			var self = this;
+
+			visit(this.treeData, function(d) {
+				if(d.children) {
+					for (var child of d.children) {
+						if (child == node) {
+							//d.children = _.without(d.children, child);
+							d.children = filterChildren(d.children, [child]);
+							self.update(self.root);
+							break;
+						}
+					}
+				}
+			},
+
+			function(d) {
+				return d.children && d.children.length > 0 ? d.children : null;
+			});
+		};
+
+		this.updateNodeData = function(node, newData){
+			node.data = newData;
+			this.update(node);
+		};
+
 		this.addChildNodes = function(originalNode, newChildren){
-
-			//return;
-
-			console.log('unmodified originalNode');
-			console.log(originalNode.toString());
 
 			newChildren.forEach(function(d){
 
-				// Creates a Node from newNode object using d3.hierarchy(.)
-				// https://github.com/d3/d3-hierarchy
+				// Creates a Node from newNode object, see https://github.com/d3/d3-hierarchy
 				var newNode = d3.hierarchy(d);
 
-				// add some properties to Node like child,parent,depth
-
-				// zero for the root node, and increasing by one for each descendant generation.
+				// setup the nodes properties
+				// depth zero for the root node, and increasing by one for each descendant generation.
 				newNode.depth = originalNode.depth + 1;
-
-				// zero for leaf nodes
-				newNode.height = 0;
-
+				// zero for leaf nodes, and the greatest distance from any descendant leaf for internal nodes
+				// TODO this is not working?
+				newNode.height = originalNode.height - 1;
 				//the parent node, or null for the root node.
 				newNode.parent = originalNode;
-
 				// uid
-				newNode.id = parseInt(Math.random() * 1000000000);
+				newNode.id = new Date() + parseInt(Math.random() * 10000);
 
 				// If no child array, create an empty array
 				if(!originalNode.children){
@@ -94,36 +153,7 @@
 
 			});
 
-			console.log('originalNode');
-			console.log(originalNode);
-
 			this.update(originalNode);
-
-
-			// ADDING invisible nodes to invisible nodes..!?
-			// if the child has children that are not currently visible, add children to each of the currently invisible nodes
-			//if(node._children) {
-			//	console.log('1');
-			//	node._children.forEach(function(childNode) {
-			//		let associatedItems = data;
-			//		childNode._children = associatedItems;
-			//	});
-			//}
-			//
-			//// if the node has visible children, make them invisible
-			//if (node.children) {
-			//	console.log('2');
-			//	node._children = node.children;
-			//	node.children = null;
-			//}
-			//// if the node has invisible children, make them visible
-			//else {
-			//	console.log('3');
-			//	node.children = node._children;
-			//	node._children = null;
-			//}
-
-
 		};
 
 		this.resetZoom = function(){
@@ -158,6 +188,8 @@
 		};
 
 		this.update = function(source) {
+
+			console.log('update');
 
 			// Assigns the x and y position for the nodes
 			this.treeData = this.treemap(this.root);
@@ -207,31 +239,53 @@
 					return (!d._children && !d.children) ? "#CCC" : "#FFF";
 				});
 
-			// Add labels for the nodes
-			nodeEnter.append('text')
-				.attr("dy", ".35em")
-				.attr("text-anchor", "middle")
-				.text(function (d) {
+			// edit node labels if exist
+			var rectLabel = node.selectAll("text.node-label");
+			if(!rectLabel.empty()){
+				rectLabel.text(function (d) {
 					return d.data.name;
-				});
+				})
+			}
+			else {
+				// init node labels
+				console.log('Add labels for the nodes');
+				nodeEnter.append('text')
+					.attr("dy", ".35em")
+					.attr("class", "node-label")
+					.attr("text-anchor", "middle")
+					.text(function (d) {
+						return d.data.name;
+					});
+			}
 
-			// add labels for LINKS
-			nodeEnter.append('text')
-				.attr("dy", ".65em")
-				.attr("x", function (d) {
-					if(d.parent){
-						return (d.parent.x - d.x) / 2;
-					}
-				})
-				.attr("y", function (d) {
-					if(d.parent){
-						return (d.parent.y - d.y) / 2;
-					}
-				})
-				.attr("text-anchor", "middle")
-				.text(function (d) {
+			// update link label if exists
+			var linkLabel = node.selectAll("text.link-label");
+			if(!linkLabel.empty()){
+				linkLabel.text(function (d) {
 					if(d.parent) return d.data.operator + " "+ d.data.value;
 				});
+			}
+
+			// init link labels
+			else {
+				nodeEnter.append('text')
+					.attr("dy", ".65em")
+					.attr("class", "link-label")
+					.attr("x", function (d) {
+						if(d.parent){
+							return (d.parent.x - d.x) / 2;
+						}
+					})
+					.attr("y", function (d) {
+						if(d.parent){
+							return (d.parent.y - d.y) / 2;
+						}
+					})
+					.attr("text-anchor", "middle")
+					.text(function (d) {
+						if(d.parent) return d.data.operator + " "+ d.data.value;
+					});
+			}
 
 			// UPDATE
 			let nodeUpdate = nodeEnter.merge(node);

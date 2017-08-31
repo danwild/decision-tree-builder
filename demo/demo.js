@@ -44,8 +44,20 @@ function addNodes(node){
 	myBuilder.addChildNodes(node, newNodes);
 }
 
+function pruneNode(node){
+	myBuilder.pruneNode(node);
+}
+
 function editNode(node){
-	//myBuilder.updateNode(node, newNodes);
+
+	let newData = {
+		"name": "newData #1",
+		"property": "newData #1",
+		"operator": "operator",
+		"value": "value"
+	};
+
+	myBuilder.updateNodeData(node, newData);
 }
 
 var added = 0;
@@ -55,8 +67,11 @@ window.addEventListener('nodeClick', function (e) {
 	console.log('nodeClick');
 	console.log(e.detail);
 
-	var targetNode = e.detail;
+	var node = e.detail;
 
-	addNodes(targetNode);
+	//addNodes(node);
 
+	//editNode(node);
+
+	pruneNode(node);
 });
