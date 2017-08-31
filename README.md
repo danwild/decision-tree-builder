@@ -10,6 +10,9 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 * **Operator:** the logical operator used to evaluate a properties value (e.g. "equals", "less than" etc.) 
 * **Decision:** a conditional operation determining which of two paths the program will take
 * **Result Node:** aka a leaf node, represents the final result when an input is evaluated by the decision tree
+* **TreeSchema:** the JSON serialised representation of a decision tree
+* **DataSchema:** the actual things/options that may be used to define a tree
+(the Properties, Values, and Operators that are available)
 
 ## notes
 * We do not provide any validation of decision tree conditional logic 
@@ -17,18 +20,11 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 	* for example; you could make a change to a parent node which renders its children completely redundant, 
 	and it will still be valid (children won't be auto pruned, do it yourself man).
 
-## todo
-* Start drafting API for interaction..
-	* Somewhere to start:
-	    * User click node to add/edit
-	        * event received with node data
-            * edit data
-            * call updateNode() with updated node, or null to delete the node (and children).
-	    * We need to define a schema for defining properties, operators, and values. Then: 
-	    * Select a property
-	    * Select an operator
-	    * Select a value
-	    * Cancel / Add / Update
+## core methods
+We basically have CRUD:
+* `addChildNodes(node, newNodesData)`
+* `updateNodeData(node, newData)`
+* `pruneNode(node)`
 
 
 ## shout outs

@@ -26,7 +26,7 @@ var myBuilder = new DecisionTreeBuilder(treeData, options);
 
 function addNodes(node){
 
-	let newNodes = [
+	let newNodesData = [
 		{
 			"label": "Dynamic #1",
 			"property": "Dynamic #1",
@@ -41,7 +41,7 @@ function addNodes(node){
 		}
 	];
 
-	myBuilder.addChildNodes(node, newNodes);
+	myBuilder.addChildNodes(node, newNodesData);
 }
 
 function pruneNode(node){
