@@ -246,13 +246,13 @@
 			var rectLabel = node.selectAll("text.node-label");
 			if (!rectLabel.empty()) {
 				rectLabel.text(function (d) {
-					return d.data.name;
+					return d.data.label;
 				});
 			} else {
 				// init node labels
 				console.log('Add labels for the nodes');
 				nodeEnter.append('text').attr("dy", ".35em").attr("class", "node-label").attr("text-anchor", "middle").text(function (d) {
-					return d.data.name;
+					return d.data.label;
 				});
 			}
 

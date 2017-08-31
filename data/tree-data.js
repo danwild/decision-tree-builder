@@ -1,31 +1,31 @@
 var treeData =
 {
-	"name": "Public",
+	"label": "Public label",
 	"property": "Public",
 	
 	"children": [
 
 		{
-			"name": "Travels On",
+			"label": "Travels On",
 			"property": "Travels On",
 			"operator": "equal",        // operators are relative to parent!
 			"value": true,              // values are relative to parent!
 
 			"children": [
 				{
-					"name": "Intercity Range",
+					"label": "Intercity Range",
 					"property": "Intercity Range",
 					"operator": "equal",
 					"value": "track",
 					"children": [
 						{
-							"name": "Train",
+							"label": "Train",
 							"property": "Train",
 							"operator": "equal",
 							"value": true
 						},
 						{
-							"name": "Tram",
+							"label": "Tram",
 							"property": "Tram",
 							"operator": "equal",
 							"value": false
@@ -33,7 +33,7 @@ var treeData =
 					]
 				},
 				{
-					"name": "Bus",
+					"label": "Bus",
 					"property": "Bus",
 					"operator": "equal",
 					"value": "road"
@@ -42,50 +42,50 @@ var treeData =
 		},
 
 		{
-			"name": "Windows",
+			"label": "Windows",
 			"property": "Windows",
 			"operator": "equals",
 			"value": false,
 
 			"children": [
 				{
-					"name": "Car",
+					"label": "Car",
 					"property": "Car",
 					"operator": "equal",
 					"value": true
 				},
 				{
-					"name": "Alive",
+					"label": "Alive",
 					"property": "Alive",
 					"operator": "equal",
 					"value": false,
 					"children": [
 						{
-							"name": "Horse",
+							"label": "Horse",
 							"property": "Horse",
 							"operator": "equal",
 							"value": true
 						},
 						{
-							"name": "Wheels",
+							"label": "Wheels",
 							"property": "Wheels",
 							"operator": "equal",
 							"value": false,
 							"children": [
 								{
-									"name": "Motor",
+									"label": "Motor",
 									"property": "Motor",
 									"operator": "equal",
 									"value": 2,
 									"children": [
 										{
-											"name": "Motorbike",
+											"label": "Motorbike",
 											"property": "Motorbike",
 											"operator": "equal",
 											"value": true
 										},
 										{
-											"name": "Bicycle",
+											"label": "Bicycle",
 											"property": "Bicycle",
 											"operator": "equal",
 											"value": false
@@ -93,7 +93,7 @@ var treeData =
 									]
 								},
 								{
-									"name": "Skateboard",
+									"label": "Skateboard",
 									"property": "Wheels",
 									"operator": "equal",
 									"value": 4

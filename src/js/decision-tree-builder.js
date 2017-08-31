@@ -243,7 +243,7 @@
 			var rectLabel = node.selectAll("text.node-label");
 			if(!rectLabel.empty()){
 				rectLabel.text(function (d) {
-					return d.data.name;
+					return d.data.label;
 				})
 			}
 			else {
@@ -254,7 +254,7 @@
 					.attr("class", "node-label")
 					.attr("text-anchor", "middle")
 					.text(function (d) {
-						return d.data.name;
+						return d.data.label;
 					});
 			}
 

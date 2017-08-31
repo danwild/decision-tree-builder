@@ -18,7 +18,6 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 	and it will still be valid (children won't be auto pruned, do it yourself man).
 
 ## todo
-* Mikes [d3js Tree Editor](https://bl.ocks.org/adamfeuer/042bfa0dde0059e2b288) looks useful, wish I found it earlier..
 * Start drafting API for interaction..
 	* Somewhere to start:
 	    * User click node to add/edit
@@ -30,12 +29,11 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 	    * Select an operator
 	    * Select a value
 	    * Cancel / Add / Update
-	    	   
-
 
 
 ## shout outs
 * [Mike Bostock](https://d3js.org/)
+* [Adam Feuer's d3js Tree Editor](https://bl.ocks.org/adamfeuer/042bfa0dde0059e2b288) found it too late to use it, but looks relevant.
 * [d3noob](https://bl.ocks.org/d3noob)
 		       	  	   
 ## license

@@ -28,13 +28,13 @@ function addNodes(node){
 
 	let newNodes = [
 		{
-			"name": "Dynamic #1",
+			"label": "Dynamic #1",
 			"property": "Dynamic #1",
 			"operator": "operator",
 			"value": "value"
 		},
 		{
-			"name": "Dynamic #2",
+			"label": "Dynamic #2",
 			"property": "Dynamic #2",
 			"operator": "operator",
 			"value": "value"
@@ -51,7 +51,7 @@ function pruneNode(node){
 function editNode(node){
 
 	let newData = {
-		"name": "newData #1",
+		"label": "newData #1",
 		"property": "newData #1",
 		"operator": "operator",
 		"value": "value"
