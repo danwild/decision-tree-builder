@@ -52,14 +52,20 @@
 
 		this.getSerialisedTree = function(){
 
-			this.treeData = this.treemap(this.root);
-			this.nodes = this.treeData.descendants();
+			let nodes = this.treeData.descendants();
 
-			// the root node has everything we need, we just have to clean it
-			let root = this.nodes[0];
-			console.log('root node');
-			console.log(root);
+			// root node has everything we need, just have to clone (so we don't corrupt d3's data structure) &
+			// clean it, note we need a modifier with stringify to ignore circular dependencies for our deep copy
+			let root = JSON.stringify(nodes[0], function(key,value){
 
+				// parent creates circular dependency, ignore it
+				if(key == "parent"){
+					return undefined;
+				}
+				return value;
+			});
+
+			root = JSON.parse(root);
 			stripNode(root);
 
 			/**
@@ -99,7 +105,6 @@
 			console.log(root);
 
 			return JSON.stringify(root);
-
 		};
 
 		/**
