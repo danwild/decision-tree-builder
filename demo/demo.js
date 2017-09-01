@@ -63,14 +63,14 @@ let added = 0;
 
 window.addEventListener('nodeClick', function (e) {
 
-	//console.log('nodeClick');
-	//console.log(e.detail);
+	console.log('nodeClick');
+	console.log(e.detail);
 
 	var node = e.detail;
 
 	if(added < 2){
 		addNodes(node, added);
-		added++;
+		//added++;
 	}
 	else {
 		let serialTree = myBuilder.getSerialisedTree();

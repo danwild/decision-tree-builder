@@ -162,8 +162,6 @@
 			// you can only add child nodes to a leaf
 			if(originalNode.children && originalNode.children.length == 2) return;
 
-			console.log('adding newChildren');
-
 			newChildren.forEach(function(d){
 
 				// Creates a Node from newNode object, see https://github.com/d3/d3-hierarchy
@@ -189,9 +187,6 @@
 				// Push it to parent.children array
 				originalNode.children.push(newNode);
 				originalNode.data.children.push(newNode.data);
-
-				console.log('newNode');
-				console.log(newNode);
 
 			});
 
@@ -263,8 +258,13 @@
 				.on('click', _click);
 
 			// RECT NODES
+
+			let nodeRects = node.selectAll("rect.node-rect");
+
+			// add any new rect nodes
 			nodeEnter.append("rect")
 				.attr("width", nodeWidth / 2)
+				.attr("class", "node-rect")
 				.attr("height", function(d){
 					return (!d._children && !d.children) ? nodeHeight / 3 : nodeHeight / 2;
 				})
@@ -277,14 +277,31 @@
 				})
 				.attr("stroke", "black")
 				.attr("stroke-width", 2)
+				.attr('cursor', 'pointer')
 				.style("fill", function (d) {
 					return (!d._children && !d.children) ? "#CCC" : "#FFF";
 				});
 
+			// we also need to trigger an update for the other nodes because the addition of
+			// new nodes means there's a leaf that needs to update to a decision node
+			nodeRects.attr("height", function(d){
+					return (!d._children && !d.children) ? nodeHeight / 3 : nodeHeight / 2;
+				})
+				.attr("transform", function (d) {
+					return (!d._children && !d.children) ? "" : "rotate(45)";
+				})
+				.attr("x", -(nodeWidth / 4))
+				.attr("y", function(d){
+					return (!d._children && !d.children) ? -(nodeHeight / 5.5) : -(nodeHeight / 4);
+				})
+				.style("fill", function (d) {
+					return (!d._children && !d.children) ? "#CCC" : "#FFF";
+				});
+
+
 			// edit node labels if exist and no new nodes
-			var rectLabel = node.selectAll("text.node-label");
+			let rectLabel = node.selectAll("text.node-label");
 			if(!rectLabel.empty() && rectLabel.size() == this.nodes.length){
-				console.log('update existing labels');
 				rectLabel.text(function (d) {
 					console.log(d.data.label);
 					return d.data.label;
@@ -292,7 +309,6 @@
 			}
 			else {
 				// add new node labels
-				console.log('Add labels for the nodes');
 				nodeEnter.append('text')
 					.attr("dy", ".35em")
 					.attr("class", "node-label")
@@ -422,9 +438,7 @@
 			}
 
 			function _click(d) {
-
 				_setHighlighted(d);
-
 				var evt = new CustomEvent('nodeClick', { detail: d });
 				window.dispatchEvent(evt);
 			}
