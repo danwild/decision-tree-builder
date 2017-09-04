@@ -82,7 +82,7 @@
 					// this *might* be async if we don't pre-request all possible properties
 					// in fact, this value might be dependant on the operator in some cases, for example if
 					// the value represents 'was target classified as x within the last y weeks?'
-					// perhaps the value request should live in the OPERATOR for complex queries?
+					// perhaps the value request should live in the OPERATOR for complex/compound queries?
 					var testValue = target[decisionProperty];
 
 					//console.log(decisionProperty + ': ' + decisionValue + ' ' + decisionOperatorType + ' ' + testValue);
