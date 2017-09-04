@@ -1,13 +1,3 @@
-body {
-    background: #CCC;
-    padding: 20px 20px 20px 20px;
-}
-
-#tree-panel {
-    position: relative;
-    background: #fcfcfc;
-    overflow: hidden;
-}
 
 .node circle {
     fill: #fff;
