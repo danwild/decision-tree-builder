@@ -46,6 +46,12 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
+		/**
+   * For my use-case this eval functionality will be implemented server-side, however here's an
+   * example of how to test a given target object against the tree rules to get a result.
+   * @param target
+   * @returns {*}
+   */
 		this.queryDecisionTree = function (target) {
 
 			var nodes = this.treeData.descendants();
@@ -73,6 +79,10 @@
 					var decisionValue = node.children[1].data.value;
 
 					// the target value to test
+					// this *might* be async if we don't pre-request all possible properties
+					// in fact, this value might be dependant on the operator in some cases, for example if
+					// the value represents 'was target classified as x within the last y weeks?'
+					// perhaps the value request should live in the OPERATOR for complex queries?
 					var testValue = target[decisionProperty];
 
 					//console.log(decisionProperty + ': ' + decisionValue + ' ' + decisionOperatorType + ' ' + testValue);
@@ -94,57 +104,6 @@
 					});
 				});
 			}
-		};
-
-		this.treeToConditional = function (tree) {
-
-			var statement = [];
-			var treeData = JSON.parse(tree);
-			var root = d3.hierarchy(treeData, function (d) {
-				return d.children;
-			});
-
-			/*
-   		0 if node.data.property node.children.data.operator node.children.data.value
-   			1 if
-   				2 if
-   					3 if
-   					3 else
-   				2 else
-   			1 else
-   				2 if
-   					3 if
-   					3 else
-   				2 else
-   					3 if
-   					 3else
-   		0 else
-   			1 if
-   			1 else
-   	 */
-
-			var out = {};
-
-			root.each(function (node) {
-				console.log(node);
-
-				if (node.children) {
-
-					var ifStatement = 'if ' + node.data.property + ' ' + node.children[0].data.operator + ' ' + node.children[0].data.value;
-					var elseStatement = 'else ';
-					//console.log(ifStatement);
-					//console.log(elseStatement);
-
-					var targetArray = statement;
-					for (var i = 0; i < node.depth; i++) {}
-				} else {
-
-					var result1 = 'RESULT ' + node.data.classification;
-					//console.log(result1);
-				}
-			});
-
-			console.log(out);
 		};
 
 		/**

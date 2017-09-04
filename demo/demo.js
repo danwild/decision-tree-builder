@@ -1,5 +1,6 @@
 
 var options = {
+
 	layout: {
 		divId: "tree-panel",
 		svgWidth: 1200,
@@ -19,6 +20,7 @@ var options = {
 		zoomScale: [-1, 100],
 		transitionDuration: 750
 	},
+
 	operatorFunctions: {
 		equal: function(a, b){
 			return new Promise((resolve, reject) => {
@@ -73,8 +75,6 @@ function queryTree(){
 		"travels_on": "track"
 	};
 
-	//let result = myBuilder.queryDecisionTree(target);
-
 	myBuilder.queryDecisionTree(target).then((result) => {
 
 		console.log('result');
@@ -84,8 +84,6 @@ function queryTree(){
 
 }
 
-let added = 0;
-
 window.addEventListener('nodeClick', function (e) {
 
 	//console.log('nodeClick');
@@ -93,21 +91,10 @@ window.addEventListener('nodeClick', function (e) {
 
 	var node = e.detail;
 
-	//if(added < 0){
-	//	addNodes(node, added);
-	//	added++;
-	//}
-	//else {
-	//	let serialTree = myBuilder.serialiseTreeToJSON();
-	//	//console.log(serialTree);
-	//
-	//	let conditional = myBuilder.treeToConditional(serialTree);
-	//}
-
 	// method examples
 	//addNodes(node);
 	//editNode(node);
 	//pruneNode(node);
-
+	//myBuilder.serialiseTreeToJSON();
 	queryTree();
 });
