@@ -21,6 +21,8 @@
 		let self = this;
 		let nodeIndex = 0;
 
+		this.operatorFunctions = options.operatorFunctions;
+
 		this.root = null;
 		this.treeData = data;
 		this.nodes = null;
@@ -49,15 +51,6 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
-		// example of parameterised, async operators
-		let operatorFunctions = {
-			equal: function(a, b){
-				return new Promise((resolve, reject) => {
-					resolve(a == b);
-				});
-			}
-		};
-
 		this.queryDecisionTree = function(target){
 
 			let nodes = this.treeData.descendants();
@@ -77,7 +70,7 @@
 				return new Promise((resolve, reject) => {
 
 					// if no more children, we have a result
-					if (!node.children) resolve({classification: node.data.classification, path: decisionPath});
+					if (!node.children) resolve({result: node.data.classification, path: decisionPath});
 
 					// decision node property
 					let decisionProperty = node.data.property;
@@ -90,7 +83,7 @@
 					//console.log(decisionProperty + ': ' + decisionValue + ' ' + decisionOperatorType + ' ' + testValue);
 
 					// check the condition of truthy node
-					let operator = operatorFunctions[decisionOperatorType];
+					let operator = self.operatorFunctions[decisionOperatorType];
 					operator(decisionValue, testValue).then((decisionTruthy) => {
 
 						decisionPath += decisionTruthy ? 1 : 0;

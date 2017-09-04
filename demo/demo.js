@@ -18,6 +18,13 @@ var options = {
 		},
 		zoomScale: [-1, 100],
 		transitionDuration: 750
+	},
+	operatorFunctions: {
+		equal: function(a, b){
+			return new Promise((resolve, reject) => {
+				resolve(a == b);
+			});
+		}
 	}
 };
 
