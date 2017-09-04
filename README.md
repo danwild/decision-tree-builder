@@ -44,7 +44,15 @@ let options = {
 		},
 		zoomScale: [-1, 100],
 		transitionDuration: 750
-	}
+	},
+	// defined for use with `queryDecisionTree` example
+	operatorFunctions: {
+        equal: function(a, b){
+            return new Promise((resolve, reject) => {
+                resolve(a == b);
+            });
+        }
+    }
 };
 
 let myBuilder = new DecisionTreeBuilder(treeData, options); // see demo for expected data format
