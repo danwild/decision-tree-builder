@@ -1,52 +1,57 @@
 var treeData =
 {
 	"label": "Public",
-	"property": "Public",
+	"property": "public",
 
 	"children": [
 
 		{
+			"label": "Windows",
+			"property": "windows",
+			"operator": "equal",
+			"value": false,
+
+			"children": [
+				{
+					"label": "Horse",
+					"property": "horse",
+					"operator": "equal",
+					"value": false,
+					"classification": "HORSE"
+				},
+				{
+					"label": "Car",
+					"property": "car",
+					"operator": "equal",
+					"value": true,
+					"classification": "CAR"
+				}
+			]
+		},
+
+		{
 			"label": "Travels On",
-			"property": "Travels On",
+			"property": "travels_on",
 			"operator": "equal",        // operators are relative to parent!
 			"value": true,              // values are relative to parent!
 
 			"children": [
 				{
 					"label": "Train",
-					"property": "Train",
+					"property": "train",
 					"operator": "equal",
-					"value": "track"
+					"value": "track",
+					"classification": "TRAIN"
 				},
 				{
 					"label": "Bus",
-					"property": "Bus",
+					"property": "bus",
 					"operator": "equal",
-					"value": "road"
-				}
-			]
-		},
-
-		{
-			"label": "Windows",
-			"property": "Windows",
-			"operator": "equals",
-			"value": false,
-
-			"children": [
-				{
-					"label": "Car",
-					"property": "Car",
-					"operator": "equal",
-					"value": true
-				},
-				{
-					"label": "Horse",
-					"property": "Horse",
-					"operator": "equal",
-					"value": false
+					"value": "road",
+					"classification": "ROAD"
 				}
 			]
 		}
+
 	]
 };

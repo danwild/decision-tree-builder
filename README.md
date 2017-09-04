@@ -61,15 +61,14 @@ window.addEventListener('nodeClick', function (e) {
 ```
 
 ## core methods
-We basically have CRUD:
 * `addChildNodes(node, newNodesData)`
 * `updateNodeData(node, newData)`
 * `pruneNode(node)`
+* `serialiseTreeToJSON()`
+* `queryDecisionTree(target)` // returns the value of resulting leaf node, and a binary path to the result.
 
 See `demo/demo.js` for example.
 
-## todo
-* serialise tree to JSON
 
 ## shout outs
 * [Mike Bostock](https://d3js.org/)

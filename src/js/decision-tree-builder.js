@@ -39,7 +39,6 @@
 		
 		// create our SVG and groups (an extra group nesting helps zooming behaviour)
 		let svg = d3.select(divId).append("svg")
-			//.attr("width", width + margin.right + margin.left)
 			.attr("width", "100%")
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")
@@ -50,7 +49,146 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
-		this.getSerialisedTree = function(){
+		// example of parameterised, async operators
+		let operatorFunctions = {
+			equal: function(a, b){
+				return new Promise((resolve, reject) => {
+					resolve(a == b);
+				});
+			}
+		};
+
+		this.queryDecisionTree = function(target){
+
+			let nodes = this.treeData.descendants();
+			let root = nodes[0];
+			let decisionPath = '';
+
+			return evaluateDecisionNode(root);
+
+			/**
+			 * Recursively evaluates decision nodes, returns a result and
+			 * the corresponding binary path it took to reach the result
+			 * @param node
+			 * @returns {*}
+			 */
+			function evaluateDecisionNode(node){
+
+				return new Promise((resolve, reject) => {
+
+					// if no more children, we have a result
+					if (!node.children) resolve({classification: node.data.classification, path: decisionPath});
+
+					// decision node property
+					let decisionProperty = node.data.property;
+					let decisionOperatorType = node.children[1].data.operator;
+					let decisionValue = node.children[1].data.value;
+
+					// the target value to test
+					let testValue = target[decisionProperty];
+
+					//console.log(decisionProperty + ': ' + decisionValue + ' ' + decisionOperatorType + ' ' + testValue);
+
+					// check the condition of truthy node
+					let operator = operatorFunctions[decisionOperatorType];
+					operator(decisionValue, testValue).then((decisionTruthy) => {
+
+						decisionPath += decisionTruthy ? 1 : 0;
+
+						// step into true branch
+						if (decisionTruthy) {
+							resolve(evaluateDecisionNode(node.children[1]));
+						}
+						// step into false branch
+						else {
+							resolve(evaluateDecisionNode(node.children[0]));
+						}
+
+					});
+
+				});
+
+			}
+
+		};
+
+		this.treeToConditional = function(tree){
+
+			let statement = [];
+			let treeData = JSON.parse(tree);
+			let root = d3.hierarchy(treeData, function (d) {
+				return d.children;
+			});
+
+			/*
+
+				0 if node.data.property node.children.data.operator node.children.data.value
+
+					1 if
+
+						2 if
+
+							3 if
+
+							3 else
+
+						2 else
+
+					1 else
+
+						2 if
+
+							3 if
+
+							3 else
+
+						2 else
+
+							3 if
+
+							 3else
+
+				0 else
+
+					1 if
+
+					1 else
+
+			 */
+
+			let out = {};
+
+			root.each(function(node){
+				console.log(node);
+
+				if(node.children){
+
+					let ifStatement = 'if '+node.data.property+ ' '+node.children[0].data.operator + ' '+node.children[0].data.value;
+					let elseStatement = 'else ';
+					//console.log(ifStatement);
+					//console.log(elseStatement);
+
+					let targetArray = statement;
+					for(var i = 0; i < node.depth; i++){
+
+					}
+
+				}
+				else {
+
+					let result1 = 'RESULT '+node.data.classification;
+					//console.log(result1);
+				}
+
+			});
+
+			console.log(out);
+		};
+
+		/**
+		 * @summary Returns a stringified representation of the tree.
+		 */
+		this.serialiseTreeToJSON = function(){
 
 			let nodes = this.treeData.descendants();
 
@@ -90,6 +228,7 @@
 				node['property'] = node.data.property;
 				if(node.data.operator) node['operator'] = node.data.operator;
 				if(node.data.value) node['value'] = node.data.value;
+				if(node.data.classification) node['classification'] = node.data.classification;
 				delete node.data;
 
 				// strip its children
@@ -100,9 +239,6 @@
 				}
 
 			}
-
-			console.log('stripped');
-			console.log(root);
 
 			return JSON.stringify(root);
 		};

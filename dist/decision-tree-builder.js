@@ -38,15 +38,126 @@
 		});
 
 		// create our SVG and groups (an extra group nesting helps zooming behaviour)
-		var svg = d3.select(divId).append("svg")
-		//.attr("width", width + margin.right + margin.left)
-		.attr("width", "100%").attr("height", height + margin.top + margin.bottom).append("g").append("g").attr("transform", "translate(" + width / 2 + "," + (margin.top + nodeHeight) + ")");
+		var svg = d3.select(divId).append("svg").attr("width", "100%").attr("height", height + margin.top + margin.bottom).append("g").append("g").attr("transform", "translate(" + width / 2 + "," + (margin.top + nodeHeight) + ")");
 
 		d3.select(divId).select('svg').call(zoom);
 
 		/* -------------------------- Public methods --------------------------------*/
 
-		this.getSerialisedTree = function () {
+		// example of parameterised, async operators
+		var operatorFunctions = {
+			equal: function equal(a, b) {
+				return new Promise(function (resolve, reject) {
+					resolve(a == b);
+				});
+			}
+		};
+
+		this.queryDecisionTree = function (target) {
+
+			var nodes = this.treeData.descendants();
+			var root = nodes[0];
+			var decisionPath = '';
+
+			return evaluateDecisionNode(root);
+
+			/**
+    * Recursively evaluates decision nodes, returns a result and
+    * the corresponding binary path it took to reach the result
+    * @param node
+    * @returns {*}
+    */
+			function evaluateDecisionNode(node) {
+
+				return new Promise(function (resolve, reject) {
+
+					// if no more children, we have a result
+					if (!node.children) resolve({ classification: node.data.classification, path: decisionPath });
+
+					// decision node property
+					var decisionProperty = node.data.property;
+					var decisionOperatorType = node.children[1].data.operator;
+					var decisionValue = node.children[1].data.value;
+
+					// the target value to test
+					var testValue = target[decisionProperty];
+
+					//console.log(decisionProperty + ': ' + decisionValue + ' ' + decisionOperatorType + ' ' + testValue);
+
+					// check the condition of truthy node
+					var operator = operatorFunctions[decisionOperatorType];
+					operator(decisionValue, testValue).then(function (decisionTruthy) {
+
+						decisionPath += decisionTruthy ? 1 : 0;
+
+						// step into true branch
+						if (decisionTruthy) {
+							resolve(evaluateDecisionNode(node.children[1]));
+						}
+						// step into false branch
+						else {
+								resolve(evaluateDecisionNode(node.children[0]));
+							}
+					});
+				});
+			}
+		};
+
+		this.treeToConditional = function (tree) {
+
+			var statement = [];
+			var treeData = JSON.parse(tree);
+			var root = d3.hierarchy(treeData, function (d) {
+				return d.children;
+			});
+
+			/*
+   		0 if node.data.property node.children.data.operator node.children.data.value
+   			1 if
+   				2 if
+   					3 if
+   					3 else
+   				2 else
+   			1 else
+   				2 if
+   					3 if
+   					3 else
+   				2 else
+   					3 if
+   					 3else
+   		0 else
+   			1 if
+   			1 else
+   	 */
+
+			var out = {};
+
+			root.each(function (node) {
+				console.log(node);
+
+				if (node.children) {
+
+					var ifStatement = 'if ' + node.data.property + ' ' + node.children[0].data.operator + ' ' + node.children[0].data.value;
+					var elseStatement = 'else ';
+					//console.log(ifStatement);
+					//console.log(elseStatement);
+
+					var targetArray = statement;
+					for (var i = 0; i < node.depth; i++) {}
+				} else {
+
+					var result1 = 'RESULT ' + node.data.classification;
+					//console.log(result1);
+				}
+			});
+
+			console.log(out);
+		};
+
+		/**
+   * @summary Returns a stringified representation of the tree.
+   */
+		this.serialiseTreeToJSON = function () {
 
 			var nodes = this.treeData.descendants();
 
@@ -86,6 +197,7 @@
 				node['property'] = node.data.property;
 				if (node.data.operator) node['operator'] = node.data.operator;
 				if (node.data.value) node['value'] = node.data.value;
+				if (node.data.classification) node['classification'] = node.data.classification;
 				delete node.data;
 
 				// strip its children
@@ -95,9 +207,6 @@
 					});
 				}
 			}
-
-			console.log('stripped');
-			console.log(root);
 
 			return JSON.stringify(root);
 		};

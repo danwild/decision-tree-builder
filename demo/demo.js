@@ -59,28 +59,48 @@ function editNode(node){
 	myBuilder.updateNodeData(node, newData);
 }
 
+function queryTree(){
+
+	let target = {
+		"public": true,
+		"travels_on": "track"
+	};
+
+	//let result = myBuilder.queryDecisionTree(target);
+
+	myBuilder.queryDecisionTree(target).then((result) => {
+
+		console.log('result');
+		console.log(result);
+
+	});
+
+}
+
 let added = 0;
 
 window.addEventListener('nodeClick', function (e) {
 
-	console.log('nodeClick');
-	console.log(e.detail);
+	//console.log('nodeClick');
+	//console.log(e.detail);
 
 	var node = e.detail;
 
-	if(added < 20){
-		addNodes(node, added);
-		added++;
-	}
-	else {
-		let serialTree = myBuilder.getSerialisedTree();
-		console.log(serialTree);
-	}
+	//if(added < 0){
+	//	addNodes(node, added);
+	//	added++;
+	//}
+	//else {
+	//	let serialTree = myBuilder.serialiseTreeToJSON();
+	//	//console.log(serialTree);
+	//
+	//	let conditional = myBuilder.treeToConditional(serialTree);
+	//}
 
 	// method examples
 	//addNodes(node);
 	//editNode(node);
 	//pruneNode(node);
 
-
+	queryTree();
 });
