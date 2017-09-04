@@ -17,7 +17,13 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 (the Properties, Values, and Operators that are available)
 
 ## notes
-* We do not provide any validation of decision tree conditional logic 
+* Decision nodes are if/else binary decision only, the data is structured such that the two children of a decision [0,1],
+are in a **meaningful** array order, i.e.
+	* the child at `0` index represents a `false` decision outcome
+	* the child at `1` index represents a `true` decision outcome
+	* so; when we query the tree as well as getting a result/leaf node, we also get a binary representation of the path, i.e.
+		* `0110` indicates four decisions were taken to reach a result => `false, true, true, false`
+* We do not provide any validation of decision tree conditional logic
 (it is distinct from the tree data structure... well more accurately the decision logic is simply stored as tree node metadata).
 	* for example; you could make a change to a parent node which renders its children completely redundant, 
 	and it will still be valid (children won't be auto pruned, do it yourself man).
