@@ -96,5 +96,8 @@ window.addEventListener('nodeClick', function (e) {
 	//editNode(node);
 	//pruneNode(node);
 	//myBuilder.serialiseTreeToJSON();
-	queryTree();
+	//queryTree();
+
+	myBuilder.fitBounds(0.70, 500);
+	//myBuilder.centerNode(node);
 });

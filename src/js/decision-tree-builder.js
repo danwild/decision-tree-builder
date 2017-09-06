@@ -11,7 +11,6 @@
 		let nodeWidth = options.layout.nodeWidth;
 		let nodeHeight = options.layout.nodeHeight;
 		let nodeMargin = options.layout.nodeMargin;
-		let zoom = d3.zoom().scaleExtent(options.layout.zoomScale).on('zoom', _zoomFn);
 		let duration = options.layout.transitionDuration;
 		let divId = '#' + options.layout.divId;
 
@@ -21,6 +20,7 @@
 		let self = this;
 		let nodeIndex = 0;
 
+		this.options = options;
 		this.operatorFunctions = options.operatorFunctions;
 
 		this.root = null;
@@ -38,16 +38,26 @@
 		this.root = d3.hierarchy(this.treeData, function (d) {
 			return d.children;
 		});
+
+		var zoom = d3.zoom()
+			.scaleExtent([1/4, 4])
+			.on('zoom', function () {
+				treePanel.attr('transform',
+					'translate(' + d3.event.transform.x +','+ d3.event.transform.y + ')'
+					+   'scale(' + d3.event.transform.k + ')');
+			});
 		
-		// create our SVG and groups (an extra group nesting helps zooming behaviour)
+		// create our SVG and groups (treePanel group nesting required to encapsulate zooming behaviour)
 		let svg = d3.select(divId).append("svg")
 			.attr("width", "100%")
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")
-			.append("g")
-			.attr("transform", "translate(" + ((width / 2)) + "," + (margin.top + nodeHeight) + ")");
+			.attr("transform", "translate(0,-9999999) scale(1)")
+			.attr("id", "treePanel");
+		let treePanel = d3.select('#treePanel');
+		let svgHandle = d3.select('svg');
+		svgHandle.call(zoom);
 
-		d3.select(divId).select('svg').call(zoom);
 
 		/* -------------------------- Public methods --------------------------------*/
 
@@ -265,8 +275,14 @@
 			this.update(originalNode);
 		};
 
-		this.resetZoom = function(){
-			svg.transition().call(zoom.transform, d3.zoomIdentity);
+		this.centerNode = function(source) {
+			let t = d3.zoomTransform(svgHandle.node());
+			let x = -source.y0;
+			let y = -source.x0;
+			x = x * t.k + self.options.layout.svgWidth / 2;
+			y = y * t.k + self.options.layout.svgHeight / 2;
+			svgHandle.transition().duration(duration)
+				.call( zoom.transform, d3.zoomIdentity.translate(x,y).scale(t.k) );
 		};
 
 		// Collapse the node and all it's children
@@ -286,7 +302,7 @@
 			}
 		};
 
-		this.colapseAll = function(){
+		this.collapseAll = function(){
 			this.root.children.forEach(self.collapse);
 			this.update(root);
 		};
@@ -296,9 +312,35 @@
 			this.update(root);
 		};
 
-		this.update = function(source) {
+		/**
+		 * Auto fit zoom to bounds of the treen nodes,
+		 * thanks to http://bl.ocks.org/TWiStErRob/raw/b1c62730e01fe33baa2dea0d0aa29359/
+		 * @param paddingPercent
+		 * @param transitionDuration
+		 */
+		this.fitBounds = function(paddingPercent, transitionDuration){
 
-			console.log('update');
+			var bounds = treePanel.node().getBBox();
+			var parent = treePanel.node().parentElement;
+			var fullWidth = parent.clientWidth,
+				fullHeight = parent.clientHeight;
+			var width = bounds.width,
+				height = bounds.height;
+			var midX = bounds.x + width / 2,
+				midY = bounds.y + height / 2;
+			if (width == 0 || height == 0) return; // nothing to fit
+			var scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
+			var translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+			svgHandle
+				.transition()
+				.duration(transitionDuration || 0) // milliseconds
+				.call( zoom.transform, d3.zoomIdentity.translate( translate[0], translate[1] ).scale(scale) );
+
+		};
+
+
+		this.update = function(source) {
 
 			// Assigns the x and y position for the nodes
 			this.treeData = this.treemap(this.root);
@@ -514,6 +556,7 @@
 				var evt = new CustomEvent('nodeClick', { detail: d });
 				window.dispatchEvent(evt);
 			}
+
 		};
 
 
@@ -580,20 +623,14 @@
 
 		}
 
-		function _zoomFn() {
-			d3.select(divId).select('svg').select('g')
-				.attr('transform', 'translate(' + d3.event.transform.x + ',' + d3.event.transform.y + ') scale(' + d3.event.transform.k + ')');
-		}
-
-		// Collapse after the second level
-		//root.children.forEach(collapse);
-
 		this.update(this.root);
 
+
+		setTimeout(() => {
+			self.fitBounds(0.70, 0);
+		}, 1000);
+
 	};
-
-
-
 
 
 	/*------------------------------ behold the state of js modules.. -------------------------------*/
