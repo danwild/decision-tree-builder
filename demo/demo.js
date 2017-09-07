@@ -61,11 +61,21 @@ function editNode(node){
 	let newData = {
 		"label": "newData #1",
 		"property": "newData #1",
-		"operator": "operator",
-		"value": "value"
+		"children": [
+			{
+				"label": "Dynamic #",
+				"property": "Dynamic #"
+			},
+			{
+				"label": "Dynamic true",
+				"property": "Dynamic true",
+				"operator": "operator",
+				"value": "value"
+			}
+		]
 	};
 
-	myBuilder.updateNodeData(node, newData);
+	myBuilder.updateDecisionNodeData(node, newData);
 }
 
 function queryTree(){
@@ -86,16 +96,16 @@ function queryTree(){
 
 window.addEventListener('nodeClick', function (e) {
 
-	//console.log('nodeClick');
-	//console.log(e.detail);
+	console.log('nodeClick');
+	console.log(e.detail);
 
 	var node = e.detail;
 
 	// method examples
 	//addNodes(node);
-	//editNode(node);
+	editNode(node);
 	//pruneNode(node);
-	console.log(myBuilder.serialiseTreeToJSON());
+	//console.log(myBuilder.serialiseTreeToJSON());
 	//queryTree();
 
 	//myBuilder.fitBounds(0.70, 500);

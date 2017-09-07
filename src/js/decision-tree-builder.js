@@ -284,12 +284,44 @@
 		};
 
 		/**
-		 * @summary Update an existing nodes data
+		 * @summary Overwrite the existing nodes data, use with caution!
+		 * (you'll probably corrupt tree if not mindful of preserving existing relationships).
+		 * Preferred: use `updateDecisionNodeData`
 		 * @param node
-		 * @param newData
+		 * @param {Object} newData: data to update node
 		 */
 		this.updateNodeData = function(node, newData){
 			node.data = newData;
+			this.update(node);
+		};
+
+		/**
+		 * @summary Update the existing node, and child data while preserving decision nodes relationship with parent.
+		 * @param node
+		 * @param {Object} newData: data to update node, including newData.children
+		 */
+		this.updateDecisionNodeData = function(node, newData){
+
+			// parent, only update label, property
+			node.data.property = newData.property;
+			node.data.label = newData.label;
+
+			if(!node.data.children) node.data.children = [];
+
+			// falsey child
+			node.data.children[0].property = newData.children[0].property;
+			node.data.children[0].label = newData.children[0].label;
+			if(node.data.children[0].hasOwnProperty('value')) node.data.children[0].value = newData.children[0].value;
+			if(node.data.children[0].hasOwnProperty('operator')) node.data.children[0].operator = newData.children[0].operator;
+			if(node.data.children[0].hasOwnProperty('classification')) node.data.children[0].classification = newData.children[0].classification;
+
+			// truthy child
+			node.data.children[1].property = newData.children[1].property;
+			node.data.children[1].label = newData.children[1].label;
+			node.data.children[1].value = newData.children[1].value;
+			node.data.children[1].operator = newData.children[1].operator;
+			if(node.data.children[1].hasOwnProperty('classification')) node.data.children[1].classification = newData.children[1].classification;
+
 			this.update(node);
 		};
 
@@ -526,7 +558,17 @@
 			var linkLabel = node.selectAll("text.link-label");
 			if(!linkLabel.empty() && linkLabel.size() == this.nodes.length){
 				linkLabel.text(function (d) {
-					if(d.parent) return d.data.operator + " "+ d.data.value;
+					// not root
+					if(d.parent) {
+						// truthy child
+						if(d.data.operator && d.data.value){
+							return d.data.operator + " "+ d.data.value;
+						}
+						// falsey child
+						else {
+							return "NOT "+ d.parent.children[1].data.operator + " "+d.parent.children[1].data.value;
+						}
+					}
 				});
 			}
 
