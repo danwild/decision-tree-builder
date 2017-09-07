@@ -98,6 +98,12 @@ window.addEventListener('nodeClick', function (e) {
 	//myBuilder.serialiseTreeToJSON();
 	//queryTree();
 
-	myBuilder.fitBounds(0.70, 500);
+	//myBuilder.fitBounds(0.70, 500);
 	//myBuilder.centerNode(node);
+
+	myBuilder.adjustBounds({
+		x: 0,
+		y: -200,
+		duration: 1000
+	})
 });

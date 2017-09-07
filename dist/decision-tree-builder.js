@@ -275,6 +275,7 @@
 			});
 
 			this.update(originalNode);
+			this.setHighlighted(originalNode, true);
 		};
 
 		this.centerNode = function (source) {
@@ -313,6 +314,24 @@
 			this.update(root);
 		};
 
+		var _previousNode = void 0;
+		this.setHighlighted = function (node, ignoreToggle) {
+
+			// clear highlighting
+			d3.selectAll(".node").select('rect').style("fill", function (d) {
+				return !d._children && !d.children ? "#CCC" : "#FFF";
+			});
+
+			// highlight target node
+			if (node && node.id != _previousNode || node.id && ignoreToggle) {
+				d3.select("#node-" + node.id).select('rect').style("fill", "#10B0F0");
+				_previousNode = node.id;
+				return;
+			}
+
+			_previousNode = null;
+		};
+
 		/**
    * Auto fit zoom to bounds of the treen nodes,
    * thanks to http://bl.ocks.org/TWiStErRob/raw/b1c62730e01fe33baa2dea0d0aa29359/
@@ -335,6 +354,15 @@
 
 			svgHandle.transition().duration(transitionDuration || 0) // milliseconds
 			.call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+		};
+
+		/**
+   * Adjust the current view position by given xy offset, animated by duration if supplied.
+   * @param offset
+   */
+		this.adjustBounds = function (offset) {
+			svgHandle.transition().duration(offset.duration || 0) // milliseconds
+			.call(zoom.translateBy, offset.x, offset.y);
 		};
 
 		this.update = function (source) {
@@ -396,7 +424,6 @@
 			var rectLabel = node.selectAll("text.node-label");
 			if (!rectLabel.empty() && rectLabel.size() == this.nodes.length) {
 				rectLabel.text(function (d) {
-					console.log(d.data.label);
 					return d.data.label;
 				});
 			} else {
@@ -497,31 +524,13 @@
 			}
 
 			function _click(d) {
-				_setHighlighted(d);
+				self.setHighlighted(d, false);
 				var evt = new CustomEvent('nodeClick', { detail: d });
 				window.dispatchEvent(evt);
 			}
 		};
 
 		/* -------------------------- Private methods --------------------------------*/
-
-		var _previousNode = void 0;
-		function _setHighlighted(node) {
-
-			// clear highlighting
-			d3.selectAll(".node").select('rect').style("fill", function (d) {
-				return !d._children && !d.children ? "#CCC" : "#FFF";
-			});
-
-			// highlight target node
-			if (node && node.id != _previousNode) {
-				d3.select("#node-" + node.id).select('rect').style("fill", "#10B0F0");
-				_previousNode = node.id;
-				return;
-			}
-
-			_previousNode = null;
-		}
 
 		/**
    * @summary A recursive helper function for performing some setup by walking through all nodes
