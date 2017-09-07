@@ -386,10 +386,11 @@
 				d3.select("#node-"+node.id).select('rect')
 					.style("fill", "#10B0F0");
 				_previousNode = node.id;
-				return;
+				return true;
 			}
 
 			_previousNode = null;
+			return false;
 		};
 
 		/**
@@ -651,8 +652,8 @@
 			}
 
 			function _click(d) {
-				self.setHighlighted(d, false);
-				var evt = new CustomEvent('nodeClick', { detail: d });
+				let active = self.setHighlighted(d, false);
+				var evt = new CustomEvent('nodeClick', { detail: active ? d : null });
 				window.dispatchEvent(evt);
 			}
 
