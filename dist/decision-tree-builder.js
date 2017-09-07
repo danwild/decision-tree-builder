@@ -152,7 +152,7 @@
 
 				// move data properties into object root
 				node['label'] = node.data.label;
-				node['property'] = node.data.property;
+				if (node.data.property) node['property'] = node.data.property;
 				if (node.data.operator) node['operator'] = node.data.operator;
 				if (node.data.hasOwnProperty('value')) node['value'] = node.data.value;
 				if (node.data.classification) node['classification'] = node.data.classification;
@@ -509,7 +509,17 @@
 							return (d.parent.y - d.y) / 2;
 						}
 					}).attr("text-anchor", "middle").text(function (d) {
-						if (d.parent) return d.data.operator + " " + d.data.value;
+						// not root
+						if (d.parent) {
+							// truthy child
+							if (d.data.operator && d.data.value) {
+								return d.data.operator + " " + d.data.value;
+							}
+							// falsey child
+							else {
+									return "NOT " + d.parent.children[1].data.operator + " " + d.parent.children[1].data.value;
+								}
+						}
 					});
 				}
 

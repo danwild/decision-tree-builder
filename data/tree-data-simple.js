@@ -8,15 +8,11 @@ var treeData =
 		{
 			"label": "Windows",
 			"property": "windows",
-			"operator": "equal",
-			"value": false,
 
 			"children": [
 				{
 					"label": "Horse",
 					"property": "horse",
-					"operator": "equal",
-					"value": false,
 					"classification": "HORSE"
 				},
 				{
@@ -39,8 +35,6 @@ var treeData =
 				{
 					"label": "Train",
 					"property": "train",
-					"operator": "equal",
-					"value": "track",
 					"classification": "TRAIN"
 				},
 				{
