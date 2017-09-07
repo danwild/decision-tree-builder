@@ -17,6 +17,8 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 (the Properties, Values, and Operators that are available)
 
 ## notes
+* You should not directly modify the `node` object that is broadcast with the `nodeClick` event as this may cause issues
+with d3's internal data structure. You should instead use `cloneAndStripNode` or similar to get a distinct copy of the nodes values.
 * Decision nodes are if/else binary decision only, the data is structured such that the two children of a decision [0,1],
 are in a **meaningful** array order, i.e.
 	* the child at `0` index represents a `false` decision outcome

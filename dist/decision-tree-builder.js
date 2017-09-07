@@ -112,14 +112,71 @@
 		};
 
 		/**
+   * Returns a stipped back clone of the given node (has d3 properties removed etc).
+   * Given the circular dependencies caused by d3's parent/child objects, you may wish to use
+   * this or something similar when you run into these problems (also directly modifying the `node`
+   * which is broadcast via `nodeClick` is not recommended.
+   * @param node
+   */
+		this.cloneAndStripNode = function (node) {
+
+			// stringify does the heavy lifting, just stip parent to prevent circular dependencies
+			var target = JSON.stringify(node, function (key, value) {
+
+				// parent creates circular dependency, ignore it
+				if (key == "parent") {
+					return undefined;
+				}
+				return value;
+			});
+
+			target = JSON.parse(target);
+			stripNode(target);
+
+			/**
+    * A recursive function to crawl all nodes and children to
+    * strip the d3 data properties we don't want to serialise
+    * @param node
+    */
+			function stripNode(node) {
+
+				// strip this node
+				delete node.height;
+				delete node.depth;
+				delete node.id;
+				delete node.parent;
+				delete node.x;
+				delete node.x0;
+				delete node.y;
+				delete node.y0;
+
+				// move data properties into object root
+				node['label'] = node.data.label;
+				node['property'] = node.data.property;
+				if (node.data.operator) node['operator'] = node.data.operator;
+				if (node.data.hasOwnProperty('value')) node['value'] = node.data.value;
+				if (node.data.classification) node['classification'] = node.data.classification;
+				delete node.data;
+
+				// strip its children
+				if (node.children) {
+					node.children.forEach(function (child) {
+						stripNode(child);
+					});
+				}
+			}
+
+			return target;
+		};
+
+		/**
    * @summary Returns a stringified representation of the tree.
    */
 		this.serialiseTreeToJSON = function () {
 
 			var nodes = this.treeData.descendants();
 
-			// root node has everything we need, just have to clone (so we don't corrupt d3's data structure) &
-			// clean it, note we need a modifier with stringify to ignore circular dependencies for our deep copy
+			// stringify does the heavy lifting, just stip parent to prevent circular dependencies
 			var root = JSON.stringify(nodes[0], function (key, value) {
 
 				// parent creates circular dependency, ignore it
@@ -153,7 +210,7 @@
 				node['label'] = node.data.label;
 				node['property'] = node.data.property;
 				if (node.data.operator) node['operator'] = node.data.operator;
-				if (node.data.value) node['value'] = node.data.value;
+				if (node.data.hasOwnProperty('value')) node['value'] = node.data.value;
 				if (node.data.classification) node['classification'] = node.data.classification;
 				delete node.data;
 

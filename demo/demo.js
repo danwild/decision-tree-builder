@@ -95,15 +95,15 @@ window.addEventListener('nodeClick', function (e) {
 	//addNodes(node);
 	//editNode(node);
 	//pruneNode(node);
-	//myBuilder.serialiseTreeToJSON();
+	console.log(myBuilder.serialiseTreeToJSON());
 	//queryTree();
 
 	//myBuilder.fitBounds(0.70, 500);
 	//myBuilder.centerNode(node);
 
-	myBuilder.adjustBounds({
-		x: 0,
-		y: -200,
-		duration: 1000
-	})
+	//myBuilder.adjustBounds({
+	//	x: 0,
+	//	y: -200,
+	//	duration: 1000
+	//});
 });
