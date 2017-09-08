@@ -323,6 +323,7 @@
 			if(node.data.children[1].hasOwnProperty('classification')) node.data.children[1].classification = newData.children[1].classification;
 
 			this.update(node);
+			this.setHighlighted(node, true);
 		};
 
 		/**
