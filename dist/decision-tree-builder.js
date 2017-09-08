@@ -366,7 +366,7 @@
 
 			this.update(originalNode);
 			this.setHighlighted(originalNode, true);
-			//_broadcastNode(originalNode);
+			_broadcastNode(originalNode);
 		};
 
 		this.centerNode = function (source) {
