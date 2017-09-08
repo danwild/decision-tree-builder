@@ -1,6 +1,6 @@
 {
 	"name": "decision-tree-builder",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"description": "A tool to build data classification rules using visual flowchart-style decision tree",
 	"main": "dist/decision-tree-builder.js",
 	"scripts": {

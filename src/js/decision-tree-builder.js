@@ -366,6 +366,7 @@
 
 			this.update(originalNode);
 			this.setHighlighted(originalNode, true);
+			//_broadcastNode(originalNode);
 		};
 
 		this.centerNode = function(source) {
@@ -562,7 +563,7 @@
 					// not root
 					if(d.parent) {
 						// truthy child
-						if(d.data.operator && d.data.value){
+						if(d.data.operator && d.data.hasOwnProperty('value')){
 							return d.data.operator + " "+ d.data.value;
 						}
 						// falsey child
@@ -593,7 +594,7 @@
 						// not root
 						if(d.parent) {
 							// truthy child
-							if(d.data.operator && d.data.value){
+							if(d.data.operator && d.data.hasOwnProperty('value')){
 								return d.data.operator + " "+ d.data.value;
 							}
 							// falsey child
@@ -696,11 +697,15 @@
 
 			function _click(d) {
 				let active = self.setHighlighted(d, false);
-				var evt = new CustomEvent('nodeClick', { detail: active ? d : null });
-				window.dispatchEvent(evt);
+				_broadcastNode(active ? d : null);
 			}
 
 		};
+
+		function _broadcastNode(node){
+			var evt = new CustomEvent('nodeClick', { detail: node });
+			window.dispatchEvent(evt);
+		}
 
 
 		/* -------------------------- Private methods --------------------------------*/
