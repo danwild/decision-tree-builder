@@ -1,0 +1,27 @@
+body {
+    background: #CCC;
+    padding: 20px 20px 20px 20px;
+}
+
+#tree-panel {
+    position: relative;
+    background: #fcfcfc;
+    overflow: hidden;
+}
+
+/* optional link coloring */
+.truthy-link {
+     stroke: #5998ff;
+}
+
+.truthy-node {
+    stroke: #5998ff;
+}
+
+.falsey-link {
+    stroke: #ff554b;
+}
+
+.falsey-node {
+    stroke: #ff554b;
+}

@@ -1,6 +1,8 @@
 
 var options = {
 
+	//colorDecisionLines: true,
+
 	layout: {
 		divId: "tree-panel",
 		svgWidth: 1200,
@@ -102,8 +104,8 @@ window.addEventListener('nodeClick', function (e) {
 	var node = e.detail;
 
 	// method examples
-	//addNodes(node);
-	editNode(node);
+	addNodes(node);
+	//editNode(node);
 	//pruneNode(node);
 	//console.log(myBuilder.serialiseTreeToJSON());
 	//queryTree();

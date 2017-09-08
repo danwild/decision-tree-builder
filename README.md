@@ -76,12 +76,17 @@ window.addEventListener('nodeClick', function (e) {
 });
 ```
 
+You can optionally color stroke of nodes and links based on their truthy/falsey status, see `tree.css` for example.
+
 ## core methods
 * `addChildNodes(node, newNodesData)`
-* `updateNodeData(node, newData)`
+* `updateDecisionNodeData(node, newData)`
 * `pruneNode(node)`
 * `serialiseTreeToJSON()`
 * `queryDecisionTree(target)` // returns the value of resulting leaf node, and a binary path to the result.
+* `setHighlighted(node, ignoreToggleState)`
+* `fitBounds(paddingPercent, transitionDuration)`
+* `adjustBounds(offset)`
 
 See `demo/demo.js` for example.
 

@@ -334,7 +334,7 @@
 		this.addChildNodes = function(originalNode, newChildren){
 
 			// you can only add child nodes to a leaf
-			if(originalNode.children && originalNode.children.length == 2) return;
+			if(!originalNode || originalNode.children && originalNode.children.length == 2) return;
 
 			newChildren.forEach(function(d){
 
@@ -503,7 +503,20 @@
 			// add any new rect nodes
 			nodeEnter.append("rect")
 				.attr("width", nodeWidth / 2)
-				.attr("class", "node-rect")
+				.attr("class", function(d){
+					// decision
+					if(d.data.children){
+						return "node-rect";
+					}
+					// truthy child
+					else if(d.data.operator && d.data.hasOwnProperty('value')){
+						return "node-rect truthy-node";
+					}
+					// falsey child
+					else {
+						return "node-rect falsey-node";
+					}
+				})
 				.attr("height", function(d){
 					return (!d._children && !d.children) ? nodeHeight / 3 : nodeHeight / 2;
 				})
@@ -532,6 +545,20 @@
 				.attr("x", -(nodeWidth / 4))
 				.attr("y", function(d){
 					return (!d._children && !d.children) ? -(nodeHeight / 5.5) : -(nodeHeight / 4);
+				})
+				.attr("class", function(d){
+					// decision
+					if(d.data.children){
+						return "node-rect";
+					}
+					// truthy child
+					else if(d.data.operator && d.data.hasOwnProperty('value')){
+						return "node-rect truthy-node";
+					}
+					// falsey child
+					else {
+						return "node-rect falsey-node";
+					}
 				})
 				.style("fill", function (d) {
 					return (!d._children && !d.children) ? "#CCC" : "#FFF";
@@ -648,11 +675,31 @@
 			let link = svg.selectAll('path.link')
 				.data(self.links, function (d) {
 					return d.id;
+				}).attr("class", function(d){
+					// truthy child
+					if(d.data.operator && d.data.hasOwnProperty('value')){
+						return "link truthy-link";
+					}
+					// falsey child
+					else {
+						return "link falsey-link";
+					}
 				});
 
 			// Enter any new links at the parent's previous position.
 			let linkEnter = link.enter().insert('path', "g")
-				.attr("class", "link")
+				.attr("class", function(d){
+
+					// truthy child
+					if(d.data.operator && d.data.hasOwnProperty('value')){
+						return "link truthy-link";
+					}
+					// falsey child
+					else {
+						return "link falsey-link";
+					}
+
+				})
 				.attr('d', function (d) {
 					// if no previous pos, just use zero
 					if(!source.x0) return  _diagonal({x: 0, y: 0}, {x: 0, y: 0});
