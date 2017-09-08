@@ -1,5 +1,9 @@
 
 var options = {
+
+	colors: {
+		nodeHighlight: "#2199e8"
+	},
 	layout: {
 		divId: "tree-panel",
 		svgWidth: 1200,

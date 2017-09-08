@@ -424,7 +424,7 @@
 			// highlight target node
 			if(node && (node.id != _previousNode) || node.id && ignoreToggle){
 				d3.select("#node-"+node.id).select('rect')
-					.style("fill", "#10B0F0");
+					.style("fill", self.options.colors && self.options.colors.nodeHighlight || "#2199e8");
 				_previousNode = node.id;
 				return true;
 			}
