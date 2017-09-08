@@ -57,6 +57,10 @@
 
 		/* -------------------------- Public methods --------------------------------*/
 
+		this.destroy = function () {
+			d3.select(divId).select("svg").remove();
+		};
+
 		/**
    * For my use-case this eval functionality will be implemented server-side, however here's an
    * example of how to test a given target object against the tree rules to get a result.

@@ -76,7 +76,7 @@ window.addEventListener('nodeClick', function (e) {
 });
 ```
 
-You can optionally color stroke of nodes and links based on their truthy/falsey status, see `tree.css` for example.
+You can optionally color stroke of nodes and links based on their truthy/falsey status, see `demo.css` for example.
 
 ## core methods
 * `addChildNodes(node, newNodesData)`
@@ -87,6 +87,7 @@ You can optionally color stroke of nodes and links based on their truthy/falsey 
 * `setHighlighted(node, ignoreToggleState)`
 * `fitBounds(paddingPercent, transitionDuration)`
 * `adjustBounds(offset)`
+* `destroy()`
 
 See `demo/demo.js` for example.
 
