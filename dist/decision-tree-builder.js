@@ -49,6 +49,12 @@
 		var svgHandle = d3.select('svg');
 		svgHandle.call(zoom);
 
+		// deselect if click off node
+		d3.select(divId).on('click', function (event) {
+			var isNode = d3.event.target.className.baseVal.indexOf('node-rect') != -1;
+			if (!isNode) self.setHighlighted(false, true);
+		});
+
 		/* -------------------------- Public methods --------------------------------*/
 
 		/**

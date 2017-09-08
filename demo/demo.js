@@ -1,8 +1,5 @@
 
 var options = {
-
-	//colorDecisionLines: true,
-
 	layout: {
 		divId: "tree-panel",
 		svgWidth: 1200,
@@ -58,9 +55,9 @@ function pruneNode(node){
 	myBuilder.pruneNode(node);
 }
 
-function editNode(node){
+function updateDecisionNodeData(node){
 
-	let newData = {
+	var newData = {
 		"label": "newData #1",
 		"property": "newData #1",
 		"children": [
@@ -82,40 +79,42 @@ function editNode(node){
 
 function queryTree(){
 
-	let target = {
+	var target = {
 		"public": true,
 		"travels_on": "track"
 	};
 
 	myBuilder.queryDecisionTree(target).then((result) => {
-
-		console.log('result');
-		console.log(result);
-
+		alert(JSON.stringify(result));
 	});
 
 }
 
 window.addEventListener('nodeClick', function (e) {
 
+	var node = e.detail;
+	var action = $("input:radio[name ='nodeAction']:checked").val();
+
 	console.log('nodeClick');
 	console.log(e.detail);
+	console.log('action '+action);
 
-	var node = e.detail;
+	switch(action){
 
-	// method examples
-	addNodes(node);
-	//editNode(node);
-	//pruneNode(node);
-	//console.log(myBuilder.serialiseTreeToJSON());
-	//queryTree();
+		case "addChildNodes":
+			addNodes(node);
+			break;
 
-	//myBuilder.fitBounds(0.70, 500);
-	//myBuilder.centerNode(node);
+		case "pruneNode":
+			pruneNode(node);
+			break;
 
-	//myBuilder.adjustBounds({
-	//	x: 0,
-	//	y: -200,
-	//	duration: 1000
-	//});
+		case "updateDecisionNodeData":
+			updateDecisionNodeData(node);
+			break;
+
+	}
 });
+
+
+

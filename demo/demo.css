@@ -9,6 +9,13 @@ body {
     overflow: hidden;
 }
 
+#controls {
+    position: absolute;
+    top: 50px;
+    left: 40px;
+    z-index: 1;
+}
+
 /* optional link coloring */
 .truthy-link {
      stroke: #5998ff;
