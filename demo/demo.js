@@ -31,18 +31,16 @@ var options = {
 
 var myBuilder = new DecisionTreeBuilder(treeData, options);
 
-function addNodes(node, index){
+function addNodes(node){
 
-	let newNodesData = [
+	var newNodesData = [
 		{
-			"label": "Dynamic #"+index,
-			"property": "Dynamic #"+index,
-			"operator": "operator",
-			"value": "value"
+			"label": "So negative :(",
+			"property": "some property"
 		},
 		{
-			"label": "Dynamic #other"+index,
-			"property": "Dynamic #other"+index,
+			"label": "So positive :)",
+			"property": "some property",
 			"operator": "operator",
 			"value": "value"
 		}
