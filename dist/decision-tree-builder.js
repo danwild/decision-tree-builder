@@ -317,7 +317,9 @@
 			if (node && node.children && node.children.length > 0) {
 				delete node.children;
 				delete node.data.children;
+				delete node.data.rules;
 				this.update(node);
+				_broadcastNode(node);
 			}
 		};
 
@@ -399,14 +401,14 @@
 			// decision
 			if (node.data.children[0].hasOwnProperty('rules')) node.data.children[0].rules = newData.children[0].rules || null;
 			// leaf
-			if (node.data.children[0].hasOwnProperty('classification')) node.data.children[0].classification = newData.children[0].classification;
+			if (newData.children[0].classification) node.data.children[0].classification = newData.children[0].classification;
 
 			// TRUTHY child
 			node.data.children[1].name = newData.children[1].name;
 			// decision
 			if (node.data.children[1].hasOwnProperty('rules')) node.data.children[1].rules = newData.children[1].rules || null;
 			// leaf
-			if (node.data.children[1].hasOwnProperty('classification')) node.data.children[1].classification = newData.children[1].classification;
+			if (newData.children[1].classification) node.data.children[1].classification = newData.children[1].classification;
 
 			this.update(node);
 			this.setHighlighted(node, true);
