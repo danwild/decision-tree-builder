@@ -52,7 +52,10 @@
 		// deselect if click off node
 		d3.select(divId).on('click', function (event) {
 			var isNode = d3.event.target.className.baseVal.indexOf('node-rect') != -1;
-			if (!isNode) self.setHighlighted(false, true);
+			if (!isNode) {
+				self.setHighlighted(false, true);
+				_broadcastNode(null);
+			}
 		});
 
 		/* -------------------------- Public methods --------------------------------*/
