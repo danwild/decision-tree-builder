@@ -5,16 +5,17 @@ Uses [d3.js v4](https://d3js.org/) for SVG drawing.
 
 ![Screenshot](/screenshots/decision-tree-builder.png?raw=true)
 
-## terminology
+## terminology / concepts
 * **Property:** a (data) attribute being evaluated as part a decision (e.g. Property: "animal")
 * **Value:** a value being used in a conditional statement to evaluate a property 
 (e.g. does Property "animal" equal the Value "cat")
-* **Operator:** the logical operator used to evaluate a properties value (e.g. "equals", "less than" etc.) 
+* **Operator:** the logical operator used to evaluate a properties value (e.g. "equals", "less than" etc.)
+* **Condition:** the logical operator (AND/OR) used to evaluate decisions that have more than one rule, e.g. `rule1 AND rule2`.
 * **Decision:** a conditional operation determining which of two paths the program will take
 * **Result Node:** aka a leaf node, represents the final result when an input is evaluated by the decision tree
 * **TreeSchema:** the JSON serialised representation of a decision tree
 * **DataSchema:** the actual things/options that may be used to define a tree
-(the Properties, Values, and Operators that are available)
+(the Properties, Values, and Operators that are available - this is not handled by this tool, user defined).
 
 ## notes
 * You should not directly modify the `node` object that is broadcast with the `nodeClick` event as this may cause issues
@@ -89,14 +90,14 @@ You can optionally color stroke of nodes and links based on their truthy/falsey 
 * `adjustBounds(offset)`
 * `destroy()`
 
-See `demo/demo.js` for example.
+See `demo.js` for example.
 
 
-## shout outs
+## shout outs / other tools
 * [Mike Bostock](https://d3js.org/)
-* [Adam Feuer's d3js Tree Editor](https://bl.ocks.org/adamfeuer/042bfa0dde0059e2b288) found it too late to use it, but looks relevant.
 * [d3noob](https://bl.ocks.org/d3noob)
-		       	  	   
+* [Adam Feuer's d3js Tree Editor](https://bl.ocks.org/adamfeuer/042bfa0dde0059e2b288) found it too late to use it, but looks relevant.
+
 ## license
 The MIT License (MIT)	
 	          	  	   

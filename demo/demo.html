@@ -23,7 +23,7 @@
 		updateDecisionNodeData (on click)
 	</label>
 
-	<button onclick="alert(myBuilder.serialiseTreeToJSON());">serialiseTreeToJSON</button>
+	<button onclick="serialise();">serialiseTreeToJSON</button>
 	<button onclick="myBuilder.fitBounds(0.70, 500);">fitBounds</button>
 	<button onclick="myBuilder.adjustBounds({ x: 100, y: -100, duration: 500 });">adjustBounds</button>
 	<button onclick="queryTree();">queryTree</button>
@@ -32,7 +32,7 @@
 
 </div>
 <div id="tree-panel"></div>
-<script src="../data/tree-data-simple.js"></script>
+<script src="../data/tree-data-complex.js"></script>
 <script src="../dist/decision-tree-builder.js"></script>
 <script src="demo.js"></script>
 </body>

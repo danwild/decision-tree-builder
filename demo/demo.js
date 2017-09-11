@@ -29,6 +29,11 @@ var options = {
 			return new Promise((resolve, reject) => {
 				resolve(a == b);
 			});
+		},
+		greater_than: function(a, b){
+			return new Promise((resolve, reject) => {
+				resolve(a > b);
+			});
 		}
 	}
 };
@@ -39,14 +44,10 @@ function addNodes(node){
 
 	var newNodesData = [
 		{
-			"label": "So negative :(",
-			"property": "some property"
+			"name": "So negative :("
 		},
 		{
-			"label": "So positive :)",
-			"property": "some property",
-			"operator": "operator",
-			"value": "value"
+			"name": "So positive :)"
 		}
 	];
 
@@ -57,21 +58,29 @@ function pruneNode(node){
 	myBuilder.pruneNode(node);
 }
 
+function serialise(){
+	var tree = myBuilder.serialiseTreeToJSON();
+	console.log(tree);
+	alert(tree);
+}
+
 function updateDecisionNodeData(node){
 
 	var newData = {
-		"label": "newData #1",
-		"property": "newData #1",
+		"name": "newData #1",
+		"rules": [
+			{
+				"property": "isFoo",
+				"operator": "equals",
+				"value": true
+			}
+		],
 		"children": [
 			{
-				"label": "Dynamic #",
-				"property": "Dynamic #"
+				"name": "Falsey child"
 			},
 			{
-				"label": "Dynamic true",
-				"property": "Dynamic true",
-				"operator": "operator",
-				"value": "value"
+				"name": "Truthy child"
 			}
 		]
 	};
@@ -81,13 +90,32 @@ function updateDecisionNodeData(node){
 
 function queryTree(){
 
-	var target = {
-		"public": true,
-		"travels_on": "track"
+	var trainExample = {
+		"isPublic": true,
+		"travelsOn": "TRACK",
+		"seatCount": 500
 	};
 
-	myBuilder.queryDecisionTree(target).then((result) => {
+	var busExample = {
+		"isPublic": true,
+		"travelsOn": "ROAD",
+		"seatCount": 500
+	};
+
+	var carExample = {
+		"isPublic": false,
+		"hasWheels": true
+	};
+
+	var carExample2 = {
+		"isPublic": false,
+		"accessMethod": "DOORS",
+		"hasWindows": true
+	};
+
+	myBuilder.queryDecisionTree(carExample2).then((result) => {
 		alert(JSON.stringify(result));
+		console.log(JSON.stringify(result));
 	});
 
 }

@@ -64,7 +64,6 @@
 			if(!isNode) self.setHighlighted(false, true);
 		});
 
-
 		/* -------------------------- Public methods --------------------------------*/
 
 		this.destroy = function(){
@@ -99,27 +98,61 @@
 					if (!node.children) resolve({result: node.data.classification, path: decisionPath});
 
 					// decision node property
-					let decisionProperty = node.data.property;
-					let decisionOperatorType = node.children[1].data.operator;
-					let decisionValue = node.children[1].data.value;
+					let rules = node.data.rules;
 
-					// the target value to test
-					// this *might* be async if we don't pre-request all possible properties
-					// in fact, this value might be dependant on the operator in some cases, for example if
-					// the value represents 'was target classified as x within the last y weeks?'
-					// perhaps the value request should live in the OPERATOR for complex/compound queries?
-					let testValue = target[decisionProperty];
+					// evaluates all rules into a boolean array
+					testRulesArray(rules, target).then((results) => {
 
-					//console.log(decisionProperty + ': ' + decisionValue + ' ' + decisionOperatorType + ' ' + testValue);
+						/*
+							 We need to split by OR conditions, e.g.
+							 0: (0 AND 1 AND 2) OR
+							 1: (3 AND 4) OR
+							 2: (5 AND 6)
 
-					// check the condition of truthy node
-					let operator = self.operatorFunctions[decisionOperatorType];
-					operator(decisionValue, testValue).then((decisionTruthy) => {
+							 Then, we simply test if any of the groups are truthy for the decision to be true.
+						 */
 
-						decisionPath += decisionTruthy ? 1 : 0;
+						let orConditions = rules.filter(function(r){
+							return r.condition && r.condition == 'OR';
+						});
+
+						// group rules by AND's
+						let ruleGroups = { "0": [] };
+						let arrIndex = 0;
+						let groupIndex = 0;
+
+						if(orConditions.length > 0){
+							rules.forEach(function(r){
+
+								if(!r.condition || r.condition == 'AND'){
+									ruleGroups[groupIndex].push(results[arrIndex]);
+								}
+
+								else if(r.condition && r.condition == 'OR'){
+									groupIndex++;
+									ruleGroups[groupIndex] = [results[arrIndex]];
+								}
+
+								arrIndex++;
+							});
+						}
+
+						else {
+							ruleGroups[0] = results;
+						}
+
+						let decisionResult = false;
+						let ruleGroupKeys = Object.keys(ruleGroups);
+						ruleGroupKeys.forEach(function(key){
+							if(ruleGroups[key].every(function(result){ return result == true; })){
+								decisionResult = true;
+							}
+						});
+
+						decisionPath += decisionResult ? 1 : 0;
 
 						// step into true branch
-						if (decisionTruthy) {
+						if (decisionResult) {
 							resolve(evaluateDecisionNode(node.children[1]));
 						}
 						// step into false branch
@@ -129,11 +162,56 @@
 
 					});
 
+
 				});
 
 			}
 
 		};
+
+		/**
+		 * Creates a Promise to test each individual rule.
+		 * This could be improved, by failing fast where possible rather than always testing all conditions.
+		 * @param rules
+		 * @param testTarget
+		 * @returns {Promise}
+		 */
+		function testRulesArray(rules, testTarget){
+
+			let promises = [];
+
+			rules.forEach(function(rule){
+
+				let promise = new Promise((resolve, reject) => {
+
+					// if single rule, simple
+					let decisionProperty = rule.property;
+					let decisionOperatorType = rule.operator;
+					let decisionValue = rule.value;
+
+					// the target value to test
+					// this *might* be async if we don't pre-request all possible properties
+					// in fact, this value might be dependant on the operator in some cases, for example if
+					// the value represents 'was target classified as x within the last y weeks?'
+					// perhaps the value request should live in the OPERATOR for complex/compound queries?
+					let testValue = testTarget[decisionProperty];
+
+					//console.log(decisionProperty + ': ' + testValue + ' ' + decisionOperatorType + ' ' + decisionValue);
+
+					// check the condition of truthy node
+					let operator = self.operatorFunctions[decisionOperatorType];
+
+					operator(testValue, decisionValue).then((decisionTruthy) => {
+						resolve(decisionTruthy);
+					});
+				});
+
+				promises.push(promise);
+			});
+
+			return Promise.all(promises)
+
+		}
 
 		/**
 		 * Returns a stipped back clone of the given node (has d3 properties removed etc).
@@ -175,10 +253,8 @@
 				delete node.y0;
 
 				// move data properties into object root
-				node['label'] = node.data.label;
-				if(node.data.property) node['property'] = node.data.property;
-				if(node.data.operator) node['operator'] = node.data.operator;
-				if(node.data.hasOwnProperty('value')) node['value'] = node.data.value;
+				node['name'] = node.data.name;
+				if(node.data.rules) node['rules'] = node.data.rules;
 				if(node.data.classification) node['classification'] = node.data.classification;
 				delete node.data;
 
@@ -234,10 +310,8 @@
 				delete node.y0;
 
 				// move data properties into object root
-				node['label'] = node.data.label;
-				node['property'] = node.data.property;
-				if(node.data.operator) node['operator'] = node.data.operator;
-				if(node.data.hasOwnProperty('value')) node['value'] = node.data.value;
+				node['name'] = node.data.name;
+				if(node.data.rules) node['rules'] = node.data.rules;
 				if(node.data.classification) node['classification'] = node.data.classification;
 				delete node.data;
 
@@ -259,7 +333,7 @@
 		 * @param node
 		 */
 		this.pruneNode = function(node){
-			if(node.children && node.children.length > 0){
+			if(node && node.children && node.children.length > 0){
 				delete node.children;
 				delete node.data.children;
 				this.update(node);
@@ -312,24 +386,26 @@
 		 */
 		this.updateDecisionNodeData = function(node, newData){
 
-			// parent, only update label, property
-			node.data.property = newData.property;
-			node.data.label = newData.label;
+			// parent, only update name, property
+			node.data.name = newData.name;
 
 			if(!node.data.children) node.data.children = [];
 
-			// falsey child
-			node.data.children[0].property = newData.children[0].property;
-			node.data.children[0].label = newData.children[0].label;
-			if(node.data.children[0].hasOwnProperty('value')) node.data.children[0].value = newData.children[0].value;
-			if(node.data.children[0].hasOwnProperty('operator')) node.data.children[0].operator = newData.children[0].operator;
+			// set rules
+			if(newData.rules) node.data.rules = newData.rules;
+
+			// FALSEY child
+			node.data.children[0].name = newData.children[0].name;
+			// decision
+			if(node.data.children[0].hasOwnProperty('rules')) node.data.children[0].rules = newData.children[0].rules || null;
+			// leaf
 			if(node.data.children[0].hasOwnProperty('classification')) node.data.children[0].classification = newData.children[0].classification;
 
-			// truthy child
-			node.data.children[1].property = newData.children[1].property;
-			node.data.children[1].label = newData.children[1].label;
-			node.data.children[1].value = newData.children[1].value;
-			node.data.children[1].operator = newData.children[1].operator;
+			// TRUTHY child
+			node.data.children[1].name = newData.children[1].name;
+			// decision
+			if(node.data.children[1].hasOwnProperty('rules')) node.data.children[1].rules = newData.children[1].rules || null;
+			// leaf
 			if(node.data.children[1].hasOwnProperty('classification')) node.data.children[1].classification = newData.children[1].classification;
 
 			this.update(node);
@@ -514,12 +590,13 @@
 			nodeEnter.append("rect")
 				.attr("width", nodeWidth / 2)
 				.attr("class", function(d){
+
 					// decision
 					if(d.data.children){
 						return "node-rect";
 					}
 					// truthy child
-					else if(d.data.operator && d.data.hasOwnProperty('value')){
+					else if(d.parent && d.parent.children[1].data.name == d.data.name){
 						return "node-rect truthy-node";
 					}
 					// falsey child
@@ -562,7 +639,7 @@
 						return "node-rect";
 					}
 					// truthy child
-					else if(d.data.operator && d.data.hasOwnProperty('value')){
+					else if(d.parent && d.parent.children[1].data.name == d.data.name){
 						return "node-rect truthy-node";
 					}
 					// falsey child
@@ -575,37 +652,37 @@
 				});
 
 
-			// edit node labels if exist and no new nodes
-			let rectLabel = node.selectAll("text.node-label");
+			// edit node names if exist and no new nodes
+			let rectLabel = node.selectAll("text.node-name");
 			if(!rectLabel.empty() && rectLabel.size() == this.nodes.length){
 				rectLabel.text(function (d) {
-					return d.data.label;
+					return d.data.name;
 				})
 			}
 			else {
-				// add new node labels
+				// add new node names
 				nodeEnter.append('text')
 					.attr("dy", ".35em")
-					.attr("class", "node-label")
+					.attr("class", "node-name")
 					.attr("text-anchor", "middle")
 					.text(function (d) {
-						return d.data.label;
+						return d.data.name;
 					});
 			}
 
-			// update link label if exists and no new nodes
-			var linkLabel = node.selectAll("text.link-label");
+			// update link name if exists and no new nodes
+			var linkLabel = node.selectAll("text.link-name");
 			if(!linkLabel.empty() && linkLabel.size() == this.nodes.length){
 				linkLabel.text(function (d) {
 					// not root
 					if(d.parent) {
 						// truthy child
-						if(d.data.operator && d.data.hasOwnProperty('value')){
-							return d.data.operator + " "+ d.data.value;
+						if(d.parent && d.parent.children[1].data.name == d.data.name){
+							return "TRUE";
 						}
 						// falsey child
 						else {
-							return "NOT "+ d.parent.children[1].data.operator + " "+d.parent.children[1].data.value;
+							return "FALSE";
 						}
 					}
 				});
@@ -631,12 +708,12 @@
 						// not root
 						if(d.parent) {
 							// truthy child
-							if(d.data.operator && d.data.hasOwnProperty('value')){
-								return d.data.operator + " "+ d.data.value;
+							if(d.parent && d.parent.children[1].data.name == d.data.name){
+								return "TRUE";
 							}
 							// falsey child
 							else {
-								return "NOT "+ d.parent.children[1].data.operator + " "+d.parent.children[1].data.value;
+								return "FALSE";
 							}
 						}
 					});
@@ -687,7 +764,7 @@
 					return d.id;
 				}).attr("class", function(d){
 					// truthy child
-					if(d.data.operator && d.data.hasOwnProperty('value')){
+					if(d.parent && d.parent.children[1].data.name == d.data.name){
 						return "link truthy-link";
 					}
 					// falsey child
@@ -699,16 +776,14 @@
 			// Enter any new links at the parent's previous position.
 			let linkEnter = link.enter().insert('path', "g")
 				.attr("class", function(d){
-
 					// truthy child
-					if(d.data.operator && d.data.hasOwnProperty('value')){
+					if(d.parent && d.parent.children[1].data.name == d.data.name){
 						return "link truthy-link";
 					}
 					// falsey child
 					else {
 						return "link falsey-link";
 					}
-
 				})
 				.attr('d', function (d) {
 					// if no previous pos, just use zero
