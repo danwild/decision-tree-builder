@@ -412,6 +412,7 @@
 
 			this.update(node);
 			this.setHighlighted(node, true);
+			_broadcastNode(node);
 		};
 
 		/**

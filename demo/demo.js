@@ -124,6 +124,7 @@ window.addEventListener('nodeClick', function (e) {
 
 	var node = e.detail;
 	var action = $("input:radio[name ='nodeAction']:checked").val();
+	$('.nodeAction').prop('checked', false);
 
 	console.log('nodeClick');
 	console.log(e.detail);
