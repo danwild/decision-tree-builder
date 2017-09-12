@@ -199,15 +199,15 @@
 		}
 
 		/**
-   * Returns a stipped back clone of the given node (has d3 properties removed etc).
+   * Returns a stripped back clone of the given node (has d3 properties removed etc).
    * Given the circular dependencies caused by d3's parent/child objects, you may wish to use
    * this or something similar when you run into these problems (also directly modifying the `node`
-   * which is broadcast via `nodeClick` is not recommended.
+   * which is broadcast via `nodeClick` is not recommended).
    * @param node
    */
 		this.cloneAndStripNode = function (node) {
 
-			// stringify does the heavy lifting, just stip parent to prevent circular dependencies
+			// stringify does the heavy lifting, just delete parent to prevent circular dependencies
 			var target = JSON.stringify(node, function (key, value) {
 
 				// parent creates circular dependency, ignore it
