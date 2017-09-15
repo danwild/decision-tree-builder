@@ -102,6 +102,7 @@
 
 					// decision node property
 					let rules = node.data.rules;
+					if(!rules) reject("All decision nodes must have rules defined for tree to be evaluated.");
 
 					// evaluates all rules into a boolean array
 					testRulesArray(rules, target).then((results) => {

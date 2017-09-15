@@ -44,10 +44,12 @@ function addNodes(node){
 
 	var newNodesData = [
 		{
-			"name": "So negative :("
+			"name": "So negative :(",
+			"classification": "DOWNER"
 		},
 		{
-			"name": "So positive :)"
+			"name": "So positive :)",
+			"classification": "UPPER"
 		}
 	];
 
@@ -77,10 +79,12 @@ function updateDecisionNodeData(node){
 		],
 		"children": [
 			{
-				"name": "Falsey child"
+				"name": "Falsey child",
+				"classification": "FALSE"
 			},
 			{
-				"name": "Truthy child"
+				"name": "Truthy child",
+				"classification": "TRUE"
 			}
 		]
 	};
