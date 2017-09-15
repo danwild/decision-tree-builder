@@ -44,10 +44,10 @@ function addNodes(node){
 
 	var newNodesData = [
 		{
-			"name": "So negative :( " + parseInt(Math.random() * 10000)
+			"name": "So negative :("
 		},
 		{
-			"name": "So positive :)" + parseInt(Math.random() * 10000)
+			"name": "So positive :)"
 		}
 	];
 
@@ -77,10 +77,10 @@ function updateDecisionNodeData(node){
 		],
 		"children": [
 			{
-				"name": "Falsey child " + parseInt(Math.random() * 10000)
+				"name": "Falsey child"
 			},
 			{
-				"name": "Truthy child " + parseInt(Math.random() * 10000)
+				"name": "Truthy child"
 			}
 		]
 	};
