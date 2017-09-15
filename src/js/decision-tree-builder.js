@@ -677,10 +677,22 @@
 					});
 			}
 
-			// update link name if exists and no new nodes
-			var linkLabel = node.selectAll("text.link-name");
-			if(!linkLabel.empty() && linkLabel.size() == this.nodes.length){
-				linkLabel.text(function (d) {
+			// add new link labels
+			nodeEnter.append('text')
+				.attr("dy", ".65em")
+				.attr("class", "link-label")
+				.attr("x", function (d) {
+					if(d.parent){
+						return (d.parent.x - d.x) / 2;
+					}
+				})
+				.attr("y", function (d) {
+					if(d.parent){
+						return (d.parent.y - d.y) / 2;
+					}
+				})
+				.attr("text-anchor", "middle")
+				.text(function (d) {
 					// not root
 					if(d.parent) {
 						// truthy child
@@ -693,38 +705,33 @@
 						}
 					}
 				});
-			}
 
-			// add new link labels
-			else {
-				nodeEnter.append('text')
-					.attr("dy", ".65em")
-					.attr("class", "link-label")
-					.attr("x", function (d) {
-						if(d.parent){
-							return (d.parent.x - d.x) / 2;
+			// update existing link text and position
+			// this could be improved by only calling this when we need to..
+			var linkLabel = node.selectAll("text.link-label");
+			linkLabel.text(function (d) {
+					// not root
+					if(d.parent) {
+						// truthy child
+						if(d.parent && d.parent.children[1].data.name == d.data.name){
+							return "TRUE";
 						}
-					})
-					.attr("y", function (d) {
-						if(d.parent){
-							return (d.parent.y - d.y) / 2;
+						// falsey child
+						else {
+							return "FALSE";
 						}
-					})
-					.attr("text-anchor", "middle")
-					.text(function (d) {
-						// not root
-						if(d.parent) {
-							// truthy child
-							if(d.parent && d.parent.children[1].data.name == d.data.name){
-								return "TRUE";
-							}
-							// falsey child
-							else {
-								return "FALSE";
-							}
-						}
-					});
-			}
+					}
+				})
+				.attr("x", function (d) {
+					if(d.parent){
+						return (d.parent.x - d.x) / 2;
+					}
+				})
+				.attr("y", function (d) {
+					if(d.parent){
+						return (d.parent.y - d.y) / 2;
+					}
+				});
 
 			// UPDATE
 			let nodeUpdate = nodeEnter.merge(node);
